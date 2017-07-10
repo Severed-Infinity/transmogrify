@@ -1,0 +1,40 @@
+<(?(?=!--)!--[\s\S]*--|(?(?=\?)\?[\s\S]*\?|(?(?=\/)\/[^.-\d][^\/\]'"[!#$%&()*+,;<=>?@^`{|}~ ]*|[^.-\d][^\/\]'"[!#$%&()*+,;<=>?@^`{|}~ ]*(?:\s[^.-\d][^\/\]'"[!#$%&()*+,;<=>?@^`{|}~ ]*(?:=(?:"[^"]*"|'[^']*'|[^'"<\s]*))?)*)\s?\/?))>
+
+<														# Tags always begin with <.
+	(?													# What if...
+		(?=!--)												# We have a comment?
+			!--[\s\S]*--										# If so, anything goes between <!-- and -->.
+			|											# OR
+			(?											# What if...
+				(?=\?)										# We have a scripting tag?
+					\?[\s\S]*\?								# If so, anything goes between <? and ?>.
+					|									# OR
+					(?									# What if...
+						(?=\/)								# We have a closing tag?
+							\/							# It should begin with a /.
+							[^.-\d]							# Then the tag name, which can't begin with any of these characters.
+							[^\/\]'"[!#$%&()*+,;<=>?@^`{|}~ ]*			# And can't contain any of these characters.
+							|							# OR... we must have some other tag.
+							[^.-\d]							# Tag names can't begin with these characters.
+							[^\/\]'"[!#$%&()*+,;<=>?@^`{|}~ ]*			# And can't contain any of these characters.
+								(?:						# Do we have any attributes?
+									\s					# If so, they'll begin with a space character.
+									[^.-\d]					# Followed by a name that doesn't begin with any of these characters.
+									[^\/\]'"[!#$%&()*+,;<=>?@^`{|}~ ]*	# And doesn't contain any of these characters.
+										(?:				# Does our attribute have a value?
+											=			# If so, the value will begin with an = sign.
+											(?:			# The value could be:
+											"[^"]*"			# Wrapped in double quotes.
+											|			# OR
+											'[^']*'			# Wrapped in single quotes.
+											|			# OR
+											[^'"<\s]*		# Not wrapped in anything.
+											)			# That does it for our attribute value.
+										)?				# If the attribute is boolean it won't need a value.
+								)*						# We could have any number of attributes.
+					)									# That does it for our closing vs other tag check.
+					\s?									# There could be some space characters before the closing >.
+					\/?									# There might also be a / if this is a self-closing tag.
+			)											# That does it for our script vs html tag check.
+	)													# That does it for our comment vs script tag check.
+>														# Tags always end with a >.
