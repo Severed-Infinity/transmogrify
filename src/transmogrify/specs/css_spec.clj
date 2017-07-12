@@ -9,22 +9,6 @@
 (s/def ::css-wide-keywords (st-ds/spec ::css-wide-keywords (s/spec #{:initial :inherit :unset :revert})))
 ;;;;;; UNITS ;;;;;;;;;
 ;; https://drafts.csswg.org/css-values-3/
-(comment
-  (def length-units
-    #{:in :cm :pc :mm :pt :px (keyword "%")})
-
-  (def angular-units
-    #{:deg :grad :rad :turn})
-
-  (def time-units
-    #{:s :ms})
-
-  (def frequency-units
-    #{:Hz :kHz})
-
-  (def resolution-units
-    #{:dpi :dpcm :dppx}))
-
 (s/def ::percentage
   (s/or
     :string (s/and spec/string? #(re-matches #"^(\d+|\d+[.]\d+)%?$" %))
