@@ -1090,10 +1090,10 @@
          (basic-map-element? coll) coll
          (vector? coll) (map #(vector->map1 _ %) coll)
          (string? coll) coll
-         :else :invalid))
+         :else :clojure.spec/invalid))
 
      (catch Exception _
-       :invalid))))
+       :clojure.spec/invalid))))
 
 (def vector->map-conformer
   (st-c/type-conforming {:map vector->map1}))
