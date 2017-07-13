@@ -148,15 +148,25 @@
 (s/conform ::font-style [:oblique {:magnitude 10 :unit :deg}])
 (s/explain-data ::font-style [:oblique {:magnitude 10 :unit :deg}])
 
+(s/def ::absolute-size
+  (st-ds/spec ::absolute-size (s/spec #{:xx-small :x-small :small :medium :large :x-large :xx-large})))
+(s/def ::relative-size (st-ds/spec ::relative-size (s/spec #{:larger :smaller})))
 (s/def ::font-size
   (st-ds/spec
     ::font-size
-    (s/or :length ::distance-units :percentage ::percentage)))
+    (s/or
+      :absolute ::absolute-size
+      :relative ::relative-size
+      :length ::distance-units
+      :percentage ::percentage)))
 
 (s/form ::font-size)
 (s/exercise ::font-size)
 (s/conform ::font-size {:magnitude 16.0 :unit :px})
 (s/explain-data ::font-size {:magnitude 16.0 :unit :%})
+
+
+
 
 (s/def ::properties
   (st-ds/spec
