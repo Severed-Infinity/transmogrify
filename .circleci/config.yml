@@ -1,7 +1,7 @@
 version: 2
 jobs:
   build:
-    working_directory: ~/cci-demo-clojure
+    working_directory: ~/transmogrify
     docker:
       - image: circleci/clojure:lein-2.7.1
     environment:
@@ -10,13 +10,13 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: cci-demo-clojure-{{ checksum "project.clj" }}
+          key: transmogrify-{{ checksum "project.clj" }}
       - run: lein deps
       - save_cache:
           paths:
             - ~/.m2
-          key: cci-demo-clojure-{{ checksum "project.clj" }}
+          key: transmogrify-{{ checksum "project.clj" }}
       - run: lein do test, uberjar
       - store_artifacts:
-          path: target/uberjar/cci-demo-clojure.jar
+          path: target/uberjar/transmogrify.jar
           destination: uberjar
