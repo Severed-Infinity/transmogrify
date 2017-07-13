@@ -7,13 +7,23 @@
              [spec :as spec]]))
 
 (s/def ::css-wide-keywords (st-ds/spec ::css-wide-keywords (s/spec #{:initial :inherit :unset :revert})))
+
 ;;;;;; UNITS ;;;;;;;;;
 ;; https://drafts.csswg.org/css-values-3/
+;; FIXME more work needs done on percentage
+(s/def ::magnitude spec/double?)
+(s/def ::unit #{:%})
 (s/def ::percentage
-  (s/or
-    :string (s/and spec/string? #(re-matches #"^(\d+|\d+[.]\d+)%?$" %))
-    #_(:vector (s/cat :magnitude spec/double? :unit #{:%}))
-    :map {:magnitude spec/double? :unit #{:%}}))
+  (st-ds/spec
+    ::percentage
+    (s/or
+      :string (s/and spec/string? #(re-matches #"^(\d+|\d+[.]\d+)%?$" %))
+      #_(:vector (s/cat :magnitude spec/double? :unit #{:%}))
+      #_(:map {:magnitude spec/double? :unit (s/spec #{:per})})
+      :map (s/keys :req-un [::magnitude ::unit]))))
+
+(s/conform ::percentage {:magnitude 16.0 :unit :%})
+(s/explain-data ::percentage {:magnitude 16.0 :unit :%})
 
 ;;; DISTANCES
 ;;; RELATIVE
@@ -60,18 +70,20 @@
 ;;; UNIT GROUPS
 ;; FIXME distance vs length naming
 (s/def ::relative-distance-units
-  (s/alt :em ::em :ex ::ex :ch ::ch :rem ::rem :vh ::vh :vw ::vw :vmin ::vmin :vmax ::vmax))
-(s/def ::absolute-distance-units (s/alt :cm ::cm :mm ::mm :q ::q :in ::in :pc ::pc :pt ::pt :px ::px))
-(s/def ::distance-units (s/alt :relative ::relative-distance-units :absolute ::absolute-distance-units))
-(s/def ::duration-units (s/alt :s ::s :ms ::ms))
-(s/def ::angular-units (s/alt :deg ::deg :grad ::grad :rad ::rad :turn ::turn))
-(s/def ::frequency-units (s/alt :hz ::hz :khz ::khz))
-(s/def ::resolution-units (s/alt :dpi ::dpi :dpcm ::dpcm :dppx ::dppx))
+  (s/or :em ::em :ex ::ex :ch ::ch :rem ::rem :vh ::vh :vw ::vw :vmin ::vmin :vmax ::vmax))
+(s/def ::absolute-distance-units (s/or :cm ::cm :mm ::mm :q ::q :in ::in :pc ::pc :pt ::pt :px ::px))
+(s/def ::distance-units (s/or :relative ::relative-distance-units :absolute ::absolute-distance-units))
+(s/def ::duration-units (s/or :s ::s :ms ::ms))
+(s/def ::angular-units (s/or :deg ::deg :grad ::grad :rad ::rad :turn ::turn))
+(s/def ::frequency-units (s/or :hz ::hz :khz ::khz))
+(s/def ::resolution-units (s/or :dpi ::dpi :dpcm ::dpcm :dppx ::dppx))
 
 (s/form ::angular-units)
 (s/exercise ::angular-units)
 (s/explain-data ::turn {:magnitude 0 :unit :turn})
 
+;;; PROPERTIES
+;;; FONT
 (s/def ::named spec/string?)
 (s/def ::generic
   (st-ds/spec
@@ -123,23 +135,44 @@
 (s/exercise ::font-stretch)
 (s/conform ::font-stretch "100%")
 
+;; FIXME decide one whether to keep oblique with angle or not
 (s/def ::font-style
   (st-ds/spec
     ::font-style
-    {}))
+    (s/or
+      :value (s/spec #{:normal :italic :oblique})
+      :oblique-angle (s/cat :value (s/spec #{:oblique}) :angle ::angular-units))))
 
+(s/form ::font-style)
+(s/exercise ::font-style)
+(s/conform ::font-style [:oblique {:magnitude 10 :unit :deg}])
+(s/explain-data ::font-style [:oblique {:magnitude 10 :unit :deg}])
+
+(s/def ::font-size
+  (st-ds/spec
+    ::font-size
+    (s/or :length ::distance-units :percentage ::percentage)))
+
+(s/form ::font-size)
+(s/exercise ::font-size)
+(s/conform ::font-size {:magnitude 16.0 :unit :px})
+(s/explain-data ::font-size {:magnitude 16.0 :unit :%})
 
 (s/def ::properties
   (st-ds/spec
     ::properties
     {(st-ds/opt :font-family)  ::font-family
      (st-ds/opt :font-weight)  ::font-weight
-     (st-ds/opt :font-stretch) ::font-stretch}))
+     (st-ds/opt :font-stretch) ::font-stretch
+     (st-ds/opt :font-style) ::font-style
+     (st-ds/opt :font-size) ::font-size}))
 
 (s/form ::properties)
 (s/exercise ::properties)
 (st-c/conform
   ::properties
-  {:font-family ["helvetica" :serif]
-   :font-weight :normal
-   :font-stretch :normal})
+  {:font-family  ["helvetica" :serif]
+   :font-weight  :normal
+   :font-stretch :normal
+   :font-style :normal
+   :font-size {:magnitude 16.0 :unit :px}})
