@@ -109,12 +109,12 @@
 ;;;;;;; REMOVE ;;;;;;;
 
 
-(do
-  (transmogrifier ::html {:allow-custom true
-                          :allow-any false
-                          :validate true} [:html [:head] [:body {} ""]]))
-   
-(spec/valid? :transmogrify.html/element [:html [:head] [:body]])
+#_(do
+    (transmogrifier ::html {:allow-custom true
+                            :allow-any    false
+                            :validate     true} [:html [:head] [:body {} ""]])
+
+    (spec/valid? :transmogrify.html/element [:html [:head] [:body]]))
 
 
 ;;;;;;;;;;;;;;;;;;;;;
