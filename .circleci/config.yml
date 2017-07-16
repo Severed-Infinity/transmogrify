@@ -19,10 +19,7 @@ jobs:
           paths:
             - ~/.m2
           key: transmogrify-{{ checksum "project.clj" }}
-      - run: lein do test, uberjar
-      - test:
-          override:
-            - lein cloverage
+      - run: lein do test cloverage, uberjar
       - store_artifacts:
           path: target/uberjar/transmogrify.jar
           destination: uberjar
