@@ -10,6 +10,9 @@ jobs:
     general:
       artifacts:
         - target/coverage
+    test:
+      override:
+        - lein cloverage
     steps:
       - checkout
       - restore_cache:
@@ -19,7 +22,7 @@ jobs:
           paths:
             - ~/.m2
           key: transmogrify-{{ checksum "project.clj" }}
-      - run: lein do test cloverage, uberjar
+      - run: lein do test, uberjar
       - store_artifacts:
           path: target/uberjar/transmogrify.jar
           destination: uberjar
