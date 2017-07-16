@@ -1,5 +1,5 @@
 (ns transmogrify.specs.html
-  (:require #_[clojure.spec.alpha :as spec] [clojure.spec :as spec]))
+  (:require #_[clojure.spec.alpha :as spec] [clojure.spec.alpha :as spec]))
 
 
 ;;;;;;;;; HTML TAGS LISTING ;;;;;;;;;

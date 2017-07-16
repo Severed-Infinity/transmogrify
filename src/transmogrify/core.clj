@@ -1,14 +1,9 @@
 (ns transmogrify.core
   (:require [transmogrify.internal :refer :all]
             [transmogrify.wip :refer :all]
-            #_[clojure.spec.alpha :as spec]
-            #_[clojure.spec.test.alpha :as stest]
+            [clojure.spec.alpha :as spec]
+            [clojure.spec.test.alpha :as stest]
             [spec-tools.spec :as st]))
-
-(spec/fdef 
-  transmogrify 
-  :args (spec/cat :language keyword? :data coll?)
-  :ret str)
 
 (defn transmogrify 
   "(transmogrify ::html [:html [:body [:p \"hello\"]]])
@@ -35,7 +30,11 @@
   (comment "using language argument lookup the respective algorithm"
     "the actual work is done by the transmogrifier")
   (transmogrifier language data))
-  
+
+(spec/fdef
+  transmogrify
+  :args (spec/cat :language keyword? :data coll?)
+  :ret str)
 
 (transmogrify ::html [:html])
 
