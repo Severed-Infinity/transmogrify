@@ -1,7 +1,4 @@
 version: 2
-general:
-  artifacts:
-    - target/coverage
 jobs:
   build:
     working_directory: ~/transmogrify
@@ -10,6 +7,9 @@ jobs:
     environment:
       LEIN_ROOT: nbd
       JVM_OPTS: -Xmx3200m
+    general:
+      artifacts:
+        - target/coverage
     steps:
       - checkout
       - restore_cache:
@@ -20,9 +20,9 @@ jobs:
             - ~/.m2
           key: transmogrify-{{ checksum "project.clj" }}
       - run: lein do test, uberjar
+      test:
+        override:
+          - lein cloverage
       - store_artifacts:
           path: target/uberjar/transmogrify.jar
           destination: uberjar
-test:
-  override:
-    - lein cloverage
