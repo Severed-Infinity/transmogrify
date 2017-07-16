@@ -242,8 +242,8 @@
 (s/def ::weight-value (st-ds/spec ::value (s/spec #{:normal :bold :bolder :lighter})))
 
 ;; FIXME move to testing file and do proper testing
-(= true (multiple-of-100? 100))
-(= false (multiple-of-100? -100))
+(true? (multiple-of-100? 100))
+(false? (multiple-of-100? -100))
 
 (s/form ::weight-number)
 (s/exercise ::weight-number)
@@ -379,12 +379,16 @@
 (s/conform ::font [:normal 400 :normal {:magnitude 16.0 :unit :px} ["helvetica"]])
 (s/explain-data ::font [{:magnitude 16.0 :unit :em} ["helvetica"]])
 
-(comment
-  (s/def ::font-synthesis)
+(s/def ::font-synthesis
+  (st-ds/spec
+    ::font-synthesis
+    (s/or
+      :none #{:none}
+      :vector [(s/spec #{:weight :small-caps :style})])))
 
-  (s/form ::font-synthesis)
-  (s/exercise ::font-synthesis)
-  (s/conform ::font-synthesis))
+(s/form ::font-synthesis)
+(s/exercise ::font-synthesis)
+#_(s/conform ::font-synthesis)
 
 (s/def ::properties
   (st-ds/spec
@@ -409,4 +413,4 @@
    :font-size     {:magnitude 16.0 :unit :px}
    :font-min-size {:magnitude 12.0 :unit :px}
    :font-max-size {:magnitude 20.0 :unit :px}
-   :font [:normal 400 :normal {:magnitude 16.0 :unit :px} ["helvetica"]]})
+   :font          [:normal 400 :normal {:magnitude 16.0 :unit :px} ["helvetica"]]})
