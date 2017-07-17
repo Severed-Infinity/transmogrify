@@ -1,7 +1,0 @@
-Lines Non-Blank Instrumented Covered Partial
- 1149      1037     495        459         15 transmogrify/specs/html_spec.clj
-  105        82      48         45          2 transmogrify/internal.clj
-  199       178      39         39          0 transmogrify/specs/html.clj
-  138       123      15         12          0 transmogrify/wip.clj
-   45        39      10         10          0 transmogrify/core.clj
-  416       360     270        270          0 transmogrify/specs/css_spec.clj
