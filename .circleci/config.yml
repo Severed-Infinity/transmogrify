@@ -24,7 +24,7 @@ jobs:
           path: target/uberjar/transmogrify-0.0.1-SNAPSHOT.jar
           destination: uberjar
       - store_artifacts:
-          path: target/coverage/codecov.json
+          path: target/
       - store_test_results:
           path: test/
       - run:
