@@ -2,6 +2,9 @@ version: 2
 jobs:
   build:
     working_directory: ~/transmogrify
+    general:
+      artifacts:
+        - "~transmogrify/target"
     docker:
       - image: circleci/clojure:lein-2.7.1
     environment:
