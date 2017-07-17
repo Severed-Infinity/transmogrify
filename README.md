@@ -3,7 +3,7 @@
 [![Dependency Status](https://www.versioneye.com/user/projects/596cf6966725bd005f84bc3c/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/596cf6966725bd005f84bc3c)
 
 [![CircleCI](https://img.shields.io/circleci/project/github/RedSparr0w/node-csgo-parser.svg?style=flat-square)](https://circleci.com/gh/Severed-Infinity/transmogrify)
-[![Codecov](https://img.shields.io/codecov/c/github/codecov/example-python.svg?style=flat-square)]()
+[![codecov](https://codecov.io/gh/Severed-Infinity/website/branch/master/graph/badge.svg)](https://codecov.io/gh/Severed-Infinity/transmogrify)
 
 # transmogrify
 
