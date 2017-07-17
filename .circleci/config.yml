@@ -30,8 +30,5 @@ jobs:
           path: test/
       - run:
           command: |
-            bash <(curl -s https://codecov.io/bash) -token $codecov -f target/coverage/codecov.json
+            bash <(curl -s https://codecov.io/bash) -token $codecov -f ~/target/coverage/codecov.json
           when: on_success
-test:
-  post:
-    - bash <(curl -s https://codecov.io/bash) -token $codecov -f target/coverage/codecov.json
