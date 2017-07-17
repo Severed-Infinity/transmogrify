@@ -1,8 +1,5 @@
 version: 2
 jobs:
-  general:
-    artifacts:
-      - target/coverage
   build:
     working_directory: ~/transmogrify
     docker:
@@ -23,6 +20,3 @@ jobs:
       - store_artifacts:
           path: target/uberjar/transmogrify.jar
           destination: uberjar
-  test:
-    override:
-      - lein cloverage
