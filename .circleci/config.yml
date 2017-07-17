@@ -24,7 +24,7 @@ jobs:
           path: target/uberjar/transmogrify.jar
           destination: uberjar
       -store_artifacts:
-          path: target/coverage
+          path: target/coverage/
           destination: coverage
       -store_test_results:
           path: test/
