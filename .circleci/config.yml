@@ -23,10 +23,10 @@ jobs:
       - store_artifacts:
           path: target/uberjar/transmogrify.jar
           destination: uberjar
-      -store_artifacts:
+      - store_artifacts:
           path: target/coverage/
           destination: coverage
-      -store_test_results:
+      - store_test_results:
           path: test/
       - run:
           command: |
