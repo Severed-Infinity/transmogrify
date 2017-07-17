@@ -27,9 +27,8 @@ jobs:
           path: target/transmogrify-0.0.1-SNAPSHOT.jar
           destination: uberjar
       - store_artifacts:
-          path: target
-      - store_test_results:
-          path: test/
+          path: target/coverage/codecov.json
+          destination: codecov
       - run:
           command: |
             bash <(curl -s https://codecov.io/bash) -token $codecov -f target/coverage/codecov.json
