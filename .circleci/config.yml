@@ -18,7 +18,7 @@ jobs:
           key: transmogrify-{{ checksum "project.clj" }}
       - run:
           command: |
-            mkdir -p target/
+            mkdir -p ~/target/
       - run: lein do test, cloverage --codecov, uberjar
       - store_artifacts:
           path: target/uberjar/transmogrify.jar
