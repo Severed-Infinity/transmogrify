@@ -22,4 +22,4 @@ jobs:
           destination: uberjar
 test:
   post:
-    - bash <(curl -s https://codecov.io/bash)
+    - bash <(curl -s https://codecov.io/bash) -f target/coverage/codecov.json
