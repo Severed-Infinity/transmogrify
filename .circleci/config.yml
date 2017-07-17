@@ -16,7 +16,10 @@ jobs:
           paths:
             - ~/.m2
           key: transmogrify-{{ checksum "project.clj" }}
-      - run: lein do test, cloverage, uberjar
+      - run: lein do test, cloverage --codecov, uberjar
       - store_artifacts:
           path: target/uberjar/transmogrify.jar
           destination: uberjar
+test:
+  post:
+    - bash <(curl -s https://codecov.io/bash)
