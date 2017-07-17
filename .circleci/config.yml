@@ -20,6 +20,8 @@ jobs:
           command: |
             mkdir -p ~/target/
       - run: lein do test, cloverage --codecov, uberjar
+          post:
+            - codecov --token=$codecov --file target/coverage/codecov.json
       - store_artifacts:
           path: target/uberjar/transmogrify.jar
           destination: uberjar
