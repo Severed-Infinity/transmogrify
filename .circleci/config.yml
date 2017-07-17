@@ -7,12 +7,6 @@ jobs:
     environment:
       LEIN_ROOT: nbd
       JVM_OPTS: -Xmx3200m
-    general:
-      artifacts:
-        - target/coverage
-    test:
-      override:
-        - lein cloverage
     steps:
       - checkout
       - restore_cache:
