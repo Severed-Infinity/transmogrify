@@ -42,7 +42,25 @@
         (test/is (= {:magnitude 16.0 :unit :in} (s/conform ::css-spec/in {:magnitude 16.0 :unit :in})))
         (test/is (= {:magnitude 16.0 :unit :pc} (s/conform ::css-spec/pc {:magnitude 16.0 :unit :pc})))
         (test/is (= {:magnitude 16.0 :unit :pt} (s/conform ::css-spec/pt {:magnitude 16.0 :unit :pt})))
-        (test/is (= {:magnitude 16.0 :unit :px} (s/conform ::css-spec/px {:magnitude 16.0 :unit :px})))))))
+        (test/is (= {:magnitude 16.0 :unit :px} (s/conform ::css-spec/px {:magnitude 16.0 :unit :px})))))
+
+    (test/testing "-> angular units"
+      (test/is (= {:magnitude 240 :unit :deg} (s/conform ::css-spec/deg {:magnitude 240 :unit :deg}))
+               "magnitude should be between 0 and 360 (inclusive)")
+      (test/is (= ::s/invalid (s/conform ::css-spec/deg {:magnitude -14 :unit :deg}))
+               "anything outside of 0 and 360 should be invalid")
+      (test/is (= {:magnitude 126 :unit :grad} (s/conform ::css-spec/grad {:magnitude 126 :unit :grad}))
+               "magnitude should be between 0 and 400 (inclusive)")
+      (test/is (= ::s/invalid (s/conform ::css-spec/grad {:magnitude 644 :unit :grad}))
+               "anything outside of 0 and 300 should be invalid")
+      (test/is (= {:magnitude 6.2 :unit :rad} (s/conform ::css-spec/rad {:magnitude 6.2 :unit :rad}))
+               "should be between 0 and 2pi")
+      (test/is (= ::s/invalid (s/conform ::css-spec/rad {:magnitude 65.89 :unit :rad}))
+               "anything outside of  0 and 2pi(inclusive) should be invalid")
+      (test/is (= {:magnitude 0.2 :unit :turn} (s/conform ::css-spec/turn {:magnitude 0.2 :unit :turn}))
+               "should be between 0 and 1 (inclusive)")
+      (test/is (= ::s/invalid (s/conform ::css-spec/turn {:magnitude -0.3 :unit :turn}))
+               "anything outside of  0 and 2pi should be invalid"))))
 
 (test/deftest css-spec-property-tests
   (test/testing "css font specs"
