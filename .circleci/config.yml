@@ -34,5 +34,5 @@ jobs:
           path: test/
       - run:
           command: |
-            bash <(curl -s https://codecov.io/bash) -token $codecov -f ~/transmogrify/target/coverage/codecov.json
+            bash <(curl -s https://codecov.io/bash) -token $codecov 
           when: on_success
