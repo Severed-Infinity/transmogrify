@@ -18,7 +18,6 @@ jobs:
           command: |
             mkdir -p ~/target/coverage/
             echo ~/target/coverage/codecov.json
-          when: on_success
       - run: lein deps
       - save_cache:
           paths:
