@@ -13,5 +13,7 @@
   :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]]}}
   :javac-options ["-target" "1.8" "-source" "1.8" "-Xlint:-options"]
   :resource-paths ["resources"]
+  :test-paths ["test"]
+  :target-path "target/%s"
   #_:aot #_[transmogrify.core]
   #_:main #_transmogrify.core)
