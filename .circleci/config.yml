@@ -16,8 +16,8 @@ jobs:
           key: transmogrify-{{ checksum "project.clj" }}
       - run:
           command: |
-            mkdir -p ~/target/coverage/
-            echo ~/target/coverage/codecov.json
+            mkdir -p ~/transmogrify/target/coverage/
+            echo ~/transmogrify/target/coverage/codecov.json
       - run: lein deps
       - save_cache:
           paths:
