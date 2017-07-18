@@ -22,7 +22,13 @@
                "map format should be valid")
       (test/is (= ::s/invalid (s/conform ::css-spec/percentage {::css-spec/magnitude 75.76 ::css-spec/unit :%}))
                "namespaced map format should be invalid")
-      (test/is (= ::s/invalid (s/conform ::css-spec/percentage [16.0 :%])) "anything else should be invalid"))))
+      (test/is (= ::s/invalid (s/conform ::css-spec/percentage [16.0 :%])) "anything else should be invalid"))
+
+    (test/testing "-> distance"
+      (test/testing "relative units"
+        (test/is (= 1 2))))))
+
+
 
 (test/deftest css-spec-property-tests
   (test/testing "css font specs"
