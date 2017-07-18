@@ -17,7 +17,7 @@
     (test/testing "css font weight spec"
       (test/testing "testing css-spec/multiple-of-100?"
         (test/is (true? (css-spec/multiple-of-100? 800)))
-        (test/is (true? (css-spec/multiple-of-100? 300)))
+        (test/is (false? (css-spec/multiple-of-100? 300)))
         (test/is (false? (css-spec/multiple-of-100? 90)))
         (test/is (false? (css-spec/multiple-of-100? 1110)))
         (test/is (false? (css-spec/multiple-of-100? -330)))))
