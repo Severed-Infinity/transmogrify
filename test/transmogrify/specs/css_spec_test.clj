@@ -5,6 +5,25 @@
 
 (test/run-tests)
 
+(test/deftest css-spec-unit-tests
+  (test/testing "css unit specs"
+    (test/testing "-> percentage units"
+      (test/is (double? (s/conform ::css-spec/magnitude 10.5)) "should be a double")
+      (test/is (= ::s/invalid (s/conform ::css-spec/magnitude 50)) "should be anything but a double")
+      (test/is (not= ::s/invalid (s/conform ::css-spec/unit :%)) "should be the percentage sign")
+      (test/is (= ::s/invalid (s/conform ::css-spec/unit :percentage)) "should be anything but :%")
+
+      (test/is (= ::s/invalid (s/conform ::css-spec/percentage "100")) "should be invalid for not having % at the end")
+      (test/is (= [:string "50.5%"] (s/conform ::css-spec/percentage "50.5%"))
+               "should be valid so long as its a double followed by % is at the end")
+      (test/is (= ::s/invalid (s/conform ::css-spec/percentage "invalid%"))
+               "even though % is at the end it should be invalid")
+      (test/is (= [:map {:magnitude 16.0 :unit :%}] (s/conform ::css-spec/percentage {:magnitude 16.0 :unit :%}))
+               "map format should be valid")
+      (test/is (= ::s/invalid (s/conform ::css-spec/percentage {::css-spec/magnitude 75.76 ::css-spec/unit :%}))
+               "namespaced map format should be invalid")
+      (test/is (= ::s/invalid (s/conform ::css-spec/percentage [16.0 :%])) "anything else should be invalid"))))
+
 (test/deftest css-spec-property-tests
   (test/testing "css font specs"
     (test/testing "-> font family spec"
