@@ -32,7 +32,7 @@
   (st-ds/spec
     ::percentage
     (s/or
-      :string (s/and spec/string? #(re-matches #"(\d+|\d+[.]\d+)%?" %))
+      :string (s/and spec/string? #(re-matches #"(\d+|\d+[.]\d+)%" %))
       :map (s/keys :req-un [::magnitude ::unit]))))
 
 ;; Removing conform and explain-data causes a massive code coverage drop
