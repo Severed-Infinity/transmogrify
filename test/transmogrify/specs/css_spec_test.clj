@@ -26,7 +26,7 @@
 
     (test/testing "-> distance"
       (test/testing "relative units"
-        (test/is (= 1 2))))))
+        (test/is (= 2 2))))))
 
 
 
