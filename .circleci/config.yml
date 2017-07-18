@@ -31,6 +31,6 @@ jobs:
       - run:
           command: |
             mkdir -p target/coverage/
-            lein cloverage -- codecov
+            lein cloverage --codecov
             bash <(curl -s https://codecov.io/bash) -token $codecov -f target/coverage/codecov.json
           when: on_success
