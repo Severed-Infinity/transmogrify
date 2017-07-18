@@ -30,7 +30,7 @@ jobs:
           path: test/
       - run:
           command: |
-            mkdir -p ~/transmogrify/target/coverage/
+            mkdir -p target/coverage/
             lein cloverage -- codecov
-            bash <(curl -s https://codecov.io/bash) -token $codecov -f ~/transmogrify/target/coverage/codecov.json
+            bash <(curl -s https://codecov.io/bash) -token $codecov -f target/coverage/codecov.json
           when: on_success
