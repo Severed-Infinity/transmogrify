@@ -18,10 +18,10 @@ jobs:
           paths:
             - ~/.m2
           key: transmogrify-{{ checksum "project.clj" }}
-      - run: lein do test, cloverage --codecov, uberjar
+      - run: lein do test, uberjar, cloverage --codecov
       - run:
           command: |
-            
+
             bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN -f target/coverage/codecov.json
           when: on_success
       - store_artifacts:
