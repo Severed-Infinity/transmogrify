@@ -26,9 +26,23 @@
 
     (test/testing "-> distance"
       (test/testing "relative units"
-        (test/is (= 2 2))))))
+        (test/is (= {:magnitude 16.0 :unit :em} (s/conform ::css-spec/em {:magnitude 16.0 :unit :em})))
+        (test/is (= {:magnitude 16.0 :unit :ex} (s/conform ::css-spec/ex {:magnitude 16.0 :unit :ex})))
+        (test/is (= {:magnitude 16.0 :unit :ch} (s/conform ::css-spec/ch {:magnitude 16.0 :unit :ch})))
+        (test/is (= {:magnitude 16.0 :unit :rem} (s/conform ::css-spec/rem {:magnitude 16.0 :unit :rem})))
+        (test/is (= {:magnitude 16.0 :unit :vh} (s/conform ::css-spec/vh {:magnitude 16.0 :unit :vh})))
+        (test/is (= {:magnitude 16.0 :unit :vw} (s/conform ::css-spec/vw {:magnitude 16.0 :unit :vw})))
+        (test/is (= {:magnitude 16.0 :unit :vmin} (s/conform ::css-spec/vmin {:magnitude 16.0 :unit :vmin})))
+        (test/is (= {:magnitude 16.0 :unit :vmax} (s/conform ::css-spec/vmax {:magnitude 16.0 :unit :vmax}))))
 
-
+      (test/testing "absolute units"
+        (test/is (= {:magnitude 16.0 :unit :cm} (s/conform ::css-spec/cm {:magnitude 16.0 :unit :cm})))
+        (test/is (= {:magnitude 16.0 :unit :mm} (s/conform ::css-spec/mm {:magnitude 16.0 :unit :mm})))
+        (test/is (= {:magnitude 16.0 :unit :q} (s/conform ::css-spec/q {:magnitude 16.0 :unit :q})))
+        (test/is (= {:magnitude 16.0 :unit :in} (s/conform ::css-spec/in {:magnitude 16.0 :unit :in})))
+        (test/is (= {:magnitude 16.0 :unit :pc} (s/conform ::css-spec/pc {:magnitude 16.0 :unit :pc})))
+        (test/is (= {:magnitude 16.0 :unit :pt} (s/conform ::css-spec/pt {:magnitude 16.0 :unit :pt})))
+        (test/is (= {:magnitude 16.0 :unit :px} (s/conform ::css-spec/px {:magnitude 16.0 :unit :px})))))))
 
 (test/deftest css-spec-property-tests
   (test/testing "css font specs"
