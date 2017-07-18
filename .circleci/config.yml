@@ -14,10 +14,6 @@ jobs:
       - checkout
       - restore_cache:
           key: transmogrify-{{ checksum "project.clj" }}
-      - run:
-          command: |
-            mkdir -p ~/transmogrify/target/coverage/
-            echo ~/transmogrify/target/coverage/codecov.json
       - run: lein deps
       - save_cache:
           paths:
@@ -34,5 +30,7 @@ jobs:
           path: test/
       - run:
           command: |
-            bash <(curl -s https://codecov.io/bash) -token $codecov 
+            mkdir -p ~/transmogrify/target/coverage/
+            lein cloverage -- codecov
+            bash <(curl -s https://codecov.io/bash) -token $codecov -f ~/transmogrify/target/coverage/codecov.json
           when: on_success
