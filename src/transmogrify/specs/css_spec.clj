@@ -118,7 +118,6 @@
 (s/form ::px)
 (s/exercise ::px)
 
-
 ;;; ANGULAR
 ;;; small code coverage drop - fixed with s/conform
 (s/def ::deg (st-ds/spec ::deg {:magnitude (s/int-in 0 361) :unit (s/spec #{:deg})}))
