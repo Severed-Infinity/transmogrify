@@ -10,7 +10,9 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: transmogrify-{{ checksum "project.clj" }}
+          keys:
+            - transmogrify-{{ checksum "project.clj" }}
+            - transmogrify
       - run: lein deps
       - save_cache:
           paths:
