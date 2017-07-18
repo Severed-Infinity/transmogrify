@@ -125,9 +125,9 @@
 (s/def ::grad (st-ds/spec ::grad {:magnitude (s/int-in 0 401) :unit (s/spec #{:grad})}))
 ;; FIXME spec/double? -> 0-2pi
 ;; FIXME spec/double? issue with whole ints
-(s/def ::rad (st-ds/spec ::rad {:magnitude spec/double? :unit (s/spec #{:rad})}))
+(s/def ::rad (st-ds/spec ::rad {:magnitude (s/and spec/double? #(< 0 % 6.2831853072)) :unit (s/spec #{:rad})}))
 ;; FIXME the range is a bit strange
-(s/def ::turn (st-ds/spec ::turn {:magnitude (s/and spec/number? #(< -1 % 1.01)) :unit (s/spec #{:turn})}))
+(s/def ::turn (st-ds/spec ::turn {:magnitude (s/and spec/number? #(< 0 % 1.01)) :unit (s/spec #{:turn})}))
 
 (s/form ::deg)
 (s/exercise ::deg)
@@ -139,6 +139,7 @@
 
 (s/form ::rad)
 (s/exercise ::rad)
+(s/conform ::rad {:magnitude 5.4 :unit :rad})
 
 (s/form ::turn)
 (s/exercise ::turn)
