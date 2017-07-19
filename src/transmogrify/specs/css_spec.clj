@@ -146,8 +146,8 @@
 (s/conform ::turn {:magnitude 0.45 :unit :turn})
 
 ;;; DURATION
-(s/def ::s (st-ds/spec ::s {:magnitude spec/double? :unit (s/spec #{:s})}))
-(s/def ::ms (st-ds/spec ::ms {:magnitude spec/double? :unit (s/spec #{:ms})}))
+(s/def ::s (st-ds/spec ::s {:magnitude spec/int? :unit (s/spec #{:s})}))
+(s/def ::ms (st-ds/spec ::ms {:magnitude spec/int? :unit (s/spec #{:ms})}))
 
 (s/form ::s)
 (s/exercise ::s)
