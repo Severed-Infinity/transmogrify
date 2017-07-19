@@ -5,6 +5,8 @@
 
 (test/run-tests)
 
+;; FIXME I am an idiot, I should be testing with s/valid? and not s/conform
+
 (test/deftest css-spec-unit-tests
   (test/testing "css unit specs"
     (test/testing "-> percentage units"
