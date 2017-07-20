@@ -33,10 +33,10 @@
 
 (spec/fdef
   transmogrify
-  :args (spec/cat :language keyword? :data coll?)
+  :args (spec/cat :language #{:html} :data coll?)
   :ret str)
 
-(transmogrify ::html [:html])
+(transmogrify :html [[:html]])
 
 
 #_(defn -main []

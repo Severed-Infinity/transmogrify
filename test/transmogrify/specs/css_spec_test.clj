@@ -13,7 +13,6 @@
 ;; FIXME I am an idiot, I should be testing with s/valid? and not s/conform
 ;; TODO property base testing
 
-;;; First attempt at prop testing
 (def pos-double (gen/fmap (fn [n] (if (pos? n) n 0.1)) gen/double))
 
 (defspec css-spec-magnitude-key-generative-test
@@ -23,7 +22,7 @@
            (s/valid? ::css-spec/magnitude d)))
 
 (defspec css-spec-unit-key-generative-test
-         10
+         10000
          (prop/for-all
            [per-sym (gen/return :%)]
            (s/valid? ::css-spec/unit per-sym)))
@@ -45,6 +44,65 @@
            [m (s/gen ::css-spec/magnitude)
             u (s/gen ::css-spec/unit)]
            (s/valid? ::css-spec/percentage {:magnitude m :unit u})))
+
+(defspec css-spec-font-family-generative-test
+         10000
+         (prop/for-all
+           [inputs (gen/one-of [(gen/tuple gen/string)
+                                (gen/tuple (s/gen ::css-spec/generic))
+                                (gen/tuple (s/gen ::css-spec/css-wide-keywords))
+                                (gen/tuple gen/string (s/gen ::css-spec/generic))
+                                (gen/tuple gen/string (s/gen ::css-spec/css-wide-keywords))
+                                (gen/tuple (s/gen ::css-spec/css-wide-keywords) (s/gen ::css-spec/generic))
+                                (gen/tuple gen/string (s/gen ::css-spec/generic) (s/gen ::css-spec/css-wide-keywords))])]
+           (s/valid? ::css-spec/font-family inputs)))
+
+(def multiple-of-100-less-then-1000
+  (gen/fmap
+    (fn [n] (if (and (< n 1000) (css-spec/multiple-of-100? n)) n 400))
+    gen/pos-int))
+
+(defspec css-spec-weight-number-generative-test
+         10000
+         (prop/for-all
+           [n multiple-of-100-less-then-1000]
+           (s/valid? ::css-spec/weight-number n)))
+
+(defspec css-spec-weight-value-generative-test
+         10000
+         (prop/for-all
+           [val (gen/one-of [(gen/return :normal) (gen/return :bold) (gen/return :bolder) (gen/return :lighter)])]
+           (s/valid? ::css-spec/weight-value val)))
+
+(defspec css-spec-font-weight-generative-test
+         10000
+         (prop/for-all
+           [inputs (gen/one-of [(s/gen ::css-spec/weight-number) (s/gen ::css-spec/weight-value)])]
+           (s/valid? ::css-spec/font-weight inputs)))
+
+(defspec css-spec-properties-map-generative-test
+         100000
+         (prop/for-all
+           [f-family (s/gen ::css-spec/font-family)
+            f-weight (s/gen ::css-spec/font-weight)
+            f-stretch (s/gen ::css-spec/font-stretch)
+            f-style (s/gen ::css-spec/font-style)
+            f-size (s/gen ::css-spec/font-size)
+            f-min-size (s/gen ::css-spec/font-min-size)
+            f-max-size (s/gen ::css-spec/font-max-size)
+            f-font (s/gen ::css-spec/font)
+            f-synthesis (s/gen ::css-spec/font-synthesis)]
+           (s/valid?
+             ::css-spec/properties
+             {:font-family    f-family
+              :font-weight    f-weight
+              :font-stretch   f-stretch
+              :font-style     f-style
+              :font-size      f-size
+              :font-min-size  f-min-size
+              :font-max-size  f-max-size
+              :font           f-font
+              :font-synthesis f-synthesis})))
 
 
 (test/deftest css-spec-unit-tests

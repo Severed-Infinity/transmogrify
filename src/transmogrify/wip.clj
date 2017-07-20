@@ -22,12 +22,12 @@
            (str/join (map #(html-tag->str %) content))
            "</"(name tag)">"))))
 
-(defmethod transmogrifier ::html
+(defmethod transmogrifier :html
   [_ data]
-  {:pre [(spec/valid? :transmogrify.html/element data)]}
+  #_{:pre [(spec/valid? :transmogrify.html/element data)]}
   (spec/conform :transmogrify.html/element data))
 
-(transmogrifier ::html [:html  [:p]])
+(transmogrifier :html [:html  [:p]])
 #_(transmogrifier ::html [:html {} [:head [:title {}] [:body {} [:img {} ] [:p]]]])
 
 (comment
