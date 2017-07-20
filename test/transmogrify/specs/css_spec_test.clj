@@ -1,15 +1,47 @@
 (ns transmogrify.specs.css-spec-test
   (:require [transmogrify.specs.css-spec :as css-spec]
             [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as s-gen]
             [clojure.spec.gen.alpha]
             [clojure.test :as test]
             [clojure.test.check :as tc]
-            [clojure.test.check.properties :as props]
-            [clojure.test.check.generators :as gen]))
+            [clojure.test.check.properties :as prop]
+            [clojure.test.check.generators :as gen]
+            [clojure.test.check.clojure-test :refer [defspec]]))
 
 (test/run-tests)
 
 ;; FIXME I am an idiot, I should be testing with s/valid? and not s/conform
+;; TODO property base testing
+
+;;; First attempt at prop testing
+(gen/generate (gen/not-empty (gen/map (s/gen ::css-spec/magnitude) (s/gen ::css-spec/unit))))
+(defspec css-spec-magnitude-key-generative-test
+         10000
+         (prop/for-all
+           [d gen/double]
+           (s/valid? ::css-spec/magnitude d)))
+
+(defspec css-spec-unit-key-generative-test
+         10
+         (prop/for-all
+           [per-sym (gen/return :%)]
+           (s/valid? ::css-spec/unit per-sym)))
+
+(def percentage-as-string (gen/fmap (fn [n] (str n "%")) gen/pos-int))
+(defspec css-spec-percentage-unit-string-generative-test
+         10000
+         (prop/for-all
+           [per-str percentage-as-string]
+           (s/valid? ::css-spec/percentage per-str)))
+
+(defspec css-spec-percentage-unit-map-generative-test
+         10000
+         (prop/for-all
+           [m (s/gen ::css-spec/magnitude)
+            u (s/gen ::css-spec/unit)]
+           (s/valid? ::css-spec/percentage {:magnitude m :unit u})))
+
 
 (test/deftest css-spec-unit-tests
   (test/testing "css unit specs"
