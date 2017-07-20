@@ -28,7 +28,7 @@
            [per-sym (gen/return :%)]
            (s/valid? ::css-spec/unit per-sym)))
 
-(def percentage-as-string (gen/fmap (fn [n] (str n "%")) gen/pos-int))
+(def percentage-as-string (gen/fmap (fn [n] (str n "%")) gen/int))
 (defspec css-spec-percentage-unit-string-generative-test
          10000
          (prop/for-all
