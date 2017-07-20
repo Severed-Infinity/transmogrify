@@ -115,7 +115,14 @@
 ;;FIXME possibly going to cause naming conflict later
 ;;TODO number keywords https://drafts.csswg.org/css-fonts-4/#valdef-font-weight-number
 ;;; small code coverage drop - fixed with s/conform
-(s/def ::weight-number (st-ds/spec ::number (s/and (s/int-in 0 1000) multiple-of-100?)))
+(s/def ::weight-number (st-ds/spec
+                         ::number
+                         (s/with-gen
+                           (s/and (s/int-in 0 1000) multiple-of-100?)
+                           #(gen/fmap
+                              (fn [n] (if (and (< 0 n 1000) (multiple-of-100? n)) n 400))
+                              gen/int))))
+
 (s/def ::weight-value (st-ds/spec ::value (s/spec #{:normal :bold :bolder :lighter})))
 
 (s/def ::font-weight
@@ -123,8 +130,7 @@
     ::font-weight
     (s/or
       :value ::weight-value
-      :number ::weight-number)
-    {:default :normal}))
+      :number ::weight-number)))
 
 (s/def ::stretch-value
   (st-ds/spec
