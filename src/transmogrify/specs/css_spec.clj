@@ -30,7 +30,11 @@
   (st-ds/spec
     ::percentage
     (s/or
-      :string (s/and spec/string? #(re-matches #"(\d+|\d+[.]\d+)%" %))
+      :string (s/with-gen
+                (s/and spec/string? #(re-matches #"(\d+|\d+[.]\d+)%" %))
+                #(gen/fmap
+                   (fn [[n1 n2]] (str n1 "." n2 "%"))
+                   (gen/tuple gen/pos-int gen/pos-int)))
       :map (s/keys :req-un [::magnitude ::unit]))))
 
 ;;; DISTANCES
