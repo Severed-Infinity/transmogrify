@@ -8,10 +8,10 @@
                  [org.clojure/clojurescript "1.9.671"]
                  [org.clojure/spec.alpha "0.1.123"]
                  [org.clojure/core.specs.alpha "0.1.10"]
-                 [metosin/spec-tools "0.3.0"]
-                 [cloverage/cloverage "1.0.9"]]
+                 [metosin/spec-tools "0.3.0"]]
   :plugins [[lein-cloverage "1.0.9"]]
-  :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]]}}
+  :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]
+                                  [cloverage/cloverage "1.0.9"]]}}
   :javac-options ["-target" "1.8" "-source" "1.8" "-Xlint:-options"]
   :resource-paths ["resources"]
   :test-paths ["test"]
