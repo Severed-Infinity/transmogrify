@@ -15,11 +15,12 @@
 ;; TODO property base testing
 
 ;;; First attempt at prop testing
-(gen/generate (gen/not-empty (gen/map (s/gen ::css-spec/magnitude) (s/gen ::css-spec/unit))))
+(def pos-double (gen/fmap (fn [n] (if (pos? n) n 0.1)) gen/double))
+
 (defspec css-spec-magnitude-key-generative-test
          10000
          (prop/for-all
-           [d gen/double]
+           [d pos-double]
            (s/valid? ::css-spec/magnitude d)))
 
 (defspec css-spec-unit-key-generative-test
@@ -28,11 +29,15 @@
            [per-sym (gen/return :%)]
            (s/valid? ::css-spec/unit per-sym)))
 
-(def percentage-as-string (gen/fmap (fn [n] (str n "%")) gen/pos-int))
+(def percentage-as-a-string
+  (gen/fmap
+    (fn [[n1 n2]] (str n1 "." n2 "%"))
+    (gen/tuple gen/pos-int gen/pos-int)))
+
 (defspec css-spec-percentage-unit-string-generative-test
          10000
          (prop/for-all
-           [per-str percentage-as-string]
+           [per-str percentage-as-a-string]
            (s/valid? ::css-spec/percentage per-str)))
 
 (defspec css-spec-percentage-unit-map-generative-test

@@ -14,7 +14,7 @@
 ;;;;;; UNITS ;;;;;;;;;
 ;; https://drafts.csswg.org/css-values-3/
 ;; FIXME more work needs done on percentage
-(s/def ::magnitude spec/double?)
+(s/def ::magnitude (s/and spec/double? pos?))
 (s/def ::unit #{:%})
 
 (s/form ::magnitude)
@@ -28,6 +28,7 @@
 ;;; FIXME code coverage drop occurs here
 ;;; FIXME possible fix would be a conformer/generator that for string has a number between 0-100 conjoined with %
 ;;; FIXME issue seems to be with the map branch - needs to cover namespaced keys too, unit is the issue?
+;; NOTE percentage cannot be negative as < 0 or 0, 0.00000001 is acceptable
 (s/def ::percentage
   (st-ds/spec
     ::percentage
@@ -280,7 +281,9 @@
   (st-ds/spec
     ::font-stretch
     (s/or
+      ;;FIXME requires globals
       :value ::stretch-value
+      ;;NOTE percentage is a css4 spec only thing
       :percentage ::percentage)))
 
 (s/form ::font-stretch)
