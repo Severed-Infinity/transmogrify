@@ -120,8 +120,8 @@
                          (s/with-gen
                            (s/and (s/int-in 0 1000) multiple-of-100?)
                            #(gen/fmap
-                              (fn [n] (if (and (< 0 n 1000) (multiple-of-100? n)) n 400))
-                              gen/int))))
+                              (fn [n] (if (and (< n 1000) (multiple-of-100? n)) n 400))
+                              gen/pos-int))))
 
 (s/def ::weight-value (st-ds/spec ::value (s/spec #{:normal :bold :bolder :lighter})))
 

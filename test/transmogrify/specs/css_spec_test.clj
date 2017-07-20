@@ -57,15 +57,15 @@
                                 (gen/tuple gen/string (s/gen ::css-spec/generic) (s/gen ::css-spec/css-wide-keywords))])]
            (s/valid? ::css-spec/font-family inputs)))
 
-(def multiple-of-100-greater-than-zero-less-then-1000
+(def multiple-of-100-less-then-1000
   (gen/fmap
-    (fn [n] (if (and (< 0 n 1000) (css-spec/multiple-of-100? n)) n 400))
-    gen/int))
+    (fn [n] (if (and (< n 1000) (css-spec/multiple-of-100? n)) n 400))
+    gen/pos-int))
 
 (defspec css-spec-weight-number-generative-test
          10000
          (prop/for-all
-           [n multiple-of-100-greater-than-zero-less-then-1000]
+           [n multiple-of-100-less-then-1000]
            (s/valid? ::css-spec/weight-number n)))
 
 (defspec css-spec-weight-value-generative-test
