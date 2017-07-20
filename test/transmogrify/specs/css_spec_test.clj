@@ -81,7 +81,7 @@
            (s/valid? ::css-spec/font-weight inputs)))
 
 (defspec css-spec-properties-map-generative-test
-         100000
+         10000
          (prop/for-all
            [f-family (s/gen ::css-spec/font-family)
             f-weight (s/gen ::css-spec/font-weight)
@@ -199,7 +199,13 @@
         (test/is (true? (css-spec/multiple-of-100? -200)) "negative 100's should be true")
         (test/is (false? (css-spec/multiple-of-100? 90)) "not a multiple of 100, should be false")
         (test/is (false? (css-spec/multiple-of-100? 1110)) "not a multiple of 100, should be false")
-        (test/is (false? (css-spec/multiple-of-100? -330)))) "not a multiple of 100, should be false")
+        (test/is (false? (css-spec/multiple-of-100? -330)))) "not a multiple of 100, should be false"
+
+      (test/testing "-> testing weight number"
+        (test/is (s/valid? ::css-spec/weight-number 400))
+        (test/is (not (s/valid? ::css-spec/weight-number -100)))
+        (test/is (not (s/valid? ::css-spec/weight-number 1200)))
+        (test/is (not (s/valid? ::css-spec/weight-number 50)))))
 
     (test/testing "-> properties map of just font specs"
       (test/is
