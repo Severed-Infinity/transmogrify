@@ -22,7 +22,7 @@
            (s/valid? ::css-spec/magnitude d)))
 
 (defspec css-spec-unit-key-generative-test
-         10
+         10000
          (prop/for-all
            [per-sym (gen/return :%)]
            (s/valid? ::css-spec/unit per-sym)))
@@ -81,7 +81,7 @@
            (s/valid? ::css-spec/font-weight inputs)))
 
 (defspec css-spec-properties-map-generative-test
-         10000
+         100000
          (prop/for-all
            [f-family (s/gen ::css-spec/font-family)
             f-weight (s/gen ::css-spec/font-weight)
