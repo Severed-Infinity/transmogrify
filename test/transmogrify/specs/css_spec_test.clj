@@ -92,15 +92,17 @@
             f-max-size (s/gen ::css-spec/font-max-size)
             f-font (s/gen ::css-spec/font)
             f-synthesis (s/gen ::css-spec/font-synthesis)]
-           (s/valid? ::css-spec/properties {:font-family    f-family
-                                            :font-weight    f-weight
-                                            :font-stretch   f-stretch
-                                            :font-style     f-style
-                                            :font-size      f-size
-                                            :font-min-size  f-min-size
-                                            :font-max-size  f-max-size
-                                            :font           f-font
-                                            :font-synthesis f-synthesis})))
+           (s/valid?
+             ::css-spec/properties
+             {:font-family    f-family
+              :font-weight    f-weight
+              :font-stretch   f-stretch
+              :font-style     f-style
+              :font-size      f-size
+              :font-min-size  f-min-size
+              :font-max-size  f-max-size
+              :font           f-font
+              :font-synthesis f-synthesis})))
 
 
 (test/deftest css-spec-unit-tests
