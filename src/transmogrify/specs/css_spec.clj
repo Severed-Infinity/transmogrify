@@ -14,7 +14,7 @@
 ;;;;;; UNITS ;;;;;;;;;
 ;; https://drafts.csswg.org/css-values-3/
 ;; FIXME more work needs done on percentage
-(s/def ::magnitude spec/double?)
+(s/def ::magnitude (s/and spec/double? pos?))
 (s/def ::unit #{:%})
 
 (s/form ::magnitude)
@@ -28,6 +28,7 @@
 ;;; FIXME code coverage drop occurs here
 ;;; FIXME possible fix would be a conformer/generator that for string has a number between 0-100 conjoined with %
 ;;; FIXME issue seems to be with the map branch - needs to cover namespaced keys too, unit is the issue?
+;; NOTE percentage cannot be negative as < 0 or 0, 0.00000001 is acceptable
 (s/def ::percentage
   (st-ds/spec
     ::percentage
@@ -40,7 +41,7 @@
 (s/form ::percentage)
 (s/exercise ::percentage)
 (s/conform ::percentage "100%")
-(s/conform ::percentage "65.45%")
+(s/conform ::percentage "-65.45%")
 (s/conform ::percentage "65.45")
 (s/conform ::percentage "15")
 (s/conform ::percentage 15)
@@ -53,6 +54,7 @@
 (s/conform ::percentage {::magnitude 16.0})
 (s/conform ::percentage {::unit :%})
 (s/conform ::percentage [16.0 :%])
+(s/explain-data ::percentage "-65.45%")
 (s/explain-data ::percentage {::magnitude 16.0 ::unit :%})
 (s/explain-data ::percentage {::magnitude 62 ::unit :%})
 (s/explain-data ::percentage {:magnitude 16.0 :unit :%})
@@ -146,8 +148,8 @@
 (s/conform ::turn {:magnitude 0.45 :unit :turn})
 
 ;;; DURATION
-(s/def ::s (st-ds/spec ::s {:magnitude spec/double? :unit (s/spec #{:s})}))
-(s/def ::ms (st-ds/spec ::ms {:magnitude spec/double? :unit (s/spec #{:ms})}))
+(s/def ::s (st-ds/spec ::s {:magnitude spec/int? :unit (s/spec #{:s})}))
+(s/def ::ms (st-ds/spec ::ms {:magnitude spec/int? :unit (s/spec #{:ms})}))
 
 (s/form ::s)
 (s/exercise ::s)
@@ -279,7 +281,9 @@
   (st-ds/spec
     ::font-stretch
     (s/or
+      ;;FIXME requires globals
       :value ::stretch-value
+      ;;NOTE percentage is a css4 spec only thing
       :percentage ::percentage)))
 
 (s/form ::font-stretch)
