@@ -2,7 +2,6 @@
   (:require [transmogrify.specs.css-spec :as css-spec]
             [clojure.spec.alpha :as s]
             [clojure.spec.gen.alpha :as s-gen]
-            [clojure.spec.gen.alpha]
             [clojure.test :as test]
             [clojure.test.check :as tc]
             [clojure.test.check.properties :as prop]

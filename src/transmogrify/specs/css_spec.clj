@@ -1,6 +1,7 @@
 (ns transmogrify.specs.css-spec
   (:require [clojure.spec.alpha :as s]
-            [clojure.spec.gen.alpha :as gen]
+            [clojure.spec.gen.alpha :as s-gen]
+            [clojure.test.check.generators :as gen]
             [spec-tools
              [core :as st-c]
              [data-spec :as st-ds]
@@ -14,7 +15,13 @@
 ;;;;;; UNITS ;;;;;;;;;
 ;; https://drafts.csswg.org/css-values-3/
 ;; FIXME more work needs done on percentage
-(s/def ::magnitude (s/and spec/double? pos?))
+(defn pos-double? [x] (and (double? x) (pos? x)))
+
+;;requires custom generator
+(s/def ::magnitude
+    (s/with-gen
+      pos-double?
+      #(gen/fmap (fn [n] (if (pos? n) n 0.1)) gen/double)))
 (s/def ::unit #{:%})
 
 (s/form ::magnitude)
