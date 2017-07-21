@@ -118,10 +118,12 @@
 (s/def ::weight-number (st-ds/spec
                          ::number
                          (s/with-gen
-                           (s/and (s/int-in 0 1000) multiple-of-100?)
+                           (s/and (s/int-in 0 1000) #(multiple-of-100? %))
                            #(gen/fmap
-                              (fn [n] (if (and (< n 1000) (multiple-of-100? n)) n 400))
-                              gen/pos-int))))
+                              (fn [n]
+                                (let [n1 (* n 100)]
+                                  (if (and (< n1 1000) (multiple-of-100? n1)) n1 400)))
+                              (gen/large-integer* {:min 1 :max 10})))))
 
 (s/def ::weight-value (st-ds/spec ::value (s/spec #{:normal :bold :bolder :lighter})))
 
