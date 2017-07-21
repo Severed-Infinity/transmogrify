@@ -60,10 +60,8 @@
 ;; FIXME only produces 400 99% of the time and 100 the others
 (def multiple-of-100-less-then-1000
   (gen/fmap
-    (fn [n]
-      (let [n1 (* n 100)]
-        (if (and (< n1 1000) (css-spec/multiple-of-100? n1)) n1 400)))
-    (gen/large-integer* {:min 1 :max 10})))
+    (fn [n] (* n 100))
+    (gen/large-integer* {:min 1 :max 9})))
 
 (defspec css-spec-weight-number-generative-test
          10000
@@ -71,8 +69,8 @@
            [n multiple-of-100-less-then-1000]
            (s/valid? ::css-spec/weight-number n)))
 
-(gen/sample multiple-of-100-less-then-1000)
-(gen/sample (s/gen ::css-spec/weight-number))
+#_(gen/sample multiple-of-100-less-then-1000)
+#_(gen/sample (s/gen ::css-spec/weight-number))
 
 (defspec css-spec-weight-value-generative-test
          10000
