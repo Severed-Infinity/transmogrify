@@ -57,16 +57,22 @@
                                 (gen/tuple gen/string (s/gen ::css-spec/generic) (s/gen ::css-spec/css-wide-keywords))])]
            (s/valid? ::css-spec/font-family inputs)))
 
+;; FIXME only produces 400 99% of the time and 100 the others
 (def multiple-of-100-less-then-1000
   (gen/fmap
-    (fn [n] (if (and (< n 1000) (css-spec/multiple-of-100? n)) n 400))
-    gen/pos-int))
+    (fn [n]
+      (let [n1 (* n 100)]
+        (if (and (< n1 1000) (css-spec/multiple-of-100? n1)) n1 400)))
+    (gen/large-integer* {:min 1 :max 10})))
 
 (defspec css-spec-weight-number-generative-test
          10000
          (prop/for-all
            [n multiple-of-100-less-then-1000]
            (s/valid? ::css-spec/weight-number n)))
+
+(gen/sample multiple-of-100-less-then-1000)
+(gen/sample (s/gen ::css-spec/weight-number))
 
 (defspec css-spec-weight-value-generative-test
          10000
@@ -203,6 +209,7 @@
 
       (test/testing "-> testing weight number"
         (test/is (s/valid? ::css-spec/weight-number 400))
+        (test/is (s/valid? ::css-spec/weight-number 300))
         (test/is (not (s/valid? ::css-spec/weight-number -100)))
         (test/is (not (s/valid? ::css-spec/weight-number 1200)))
         (test/is (not (s/valid? ::css-spec/weight-number 50)))))
