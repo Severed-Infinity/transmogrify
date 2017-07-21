@@ -167,6 +167,10 @@
 (s/conform ::css-spec/weight-number 50)
 (s/conform ::css-spec/weight-number 1200)
 (s/conform ::css-spec/weight-number 0)
+(s/conform ::css-spec/weight-number 100.50)
+(s/conform ::css-spec/weight-number 100.00)
+(s/conform ::css-spec/weight-number -200.00)
+(s/conform ::css-spec/weight-number "hello")
 
 (s/form ::css-spec/weight-value)
 (s/exercise ::css-spec/weight-value)
