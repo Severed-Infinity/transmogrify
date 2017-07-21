@@ -197,13 +197,13 @@
       (test/is (not (s/valid? ::css-spec/font-family :serif)) "keyword generic font should be invalid"))
 
     (test/testing "-> font weight spec"
-      (test/testing "-> testing css-spec/multiple-of-100?"
-        (test/is (true? (css-spec/multiple-of-100? 800)) "positive 100's, should be true")
-        (test/is (true? (css-spec/multiple-of-100? 300)) "positive 100's, should be true")
-        (test/is (true? (css-spec/multiple-of-100? -200)) "negative 100's should be true")
-        (test/is (false? (css-spec/multiple-of-100? 90)) "not a multiple of 100, should be false")
-        (test/is (false? (css-spec/multiple-of-100? 1110)) "not a multiple of 100, should be false")
-        (test/is (false? (css-spec/multiple-of-100? -330)))) "not a multiple of 100, should be false"
+      #_(test/testing "-> testing css-spec/multiple-of-100?"
+          (test/is (true? (css-spec/multiple-of-100? 800)) "positive 100's, should be true")
+          (test/is (true? (css-spec/multiple-of-100? 300)) "positive 100's, should be true")
+          (test/is (true? (css-spec/multiple-of-100? -200)) "negative 100's should be true")
+          (test/is (false? (css-spec/multiple-of-100? 90)) "not a multiple of 100, should be false")
+          (test/is (false? (css-spec/multiple-of-100? 1110)) "not a multiple of 100, should be false")
+          (test/is (false? (css-spec/multiple-of-100? -330)))) "not a multiple of 100, should be false"
 
       (test/testing "-> testing weight number"
         (test/is (s/valid? ::css-spec/weight-number 400))
