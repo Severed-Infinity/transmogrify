@@ -119,11 +119,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod transmogrifier ::fuse
+(defmethod transmogrifier :fuse
   [_ & data]
   (str data " fusing it up"))
 
-(defmethod transmogrifier ::java-fxml
+(defmethod transmogrifier :java-fxml
   [_ & data]
   (comment "need to deal with java fxml imports")
   (str data " FX-ing things"))

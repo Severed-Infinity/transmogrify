@@ -84,7 +84,7 @@
            [inputs (gen/one-of [(s/gen ::css-spec/weight-number) (s/gen ::css-spec/weight-value)])]
            (s/valid? ::css-spec/font-weight inputs)))
 
-(defspec css-spec-properties-map-generative-test
+(defspec z-css-spec-properties-map-generative-test
          10000
          (prop/for-all
            [f-family (s/gen ::css-spec/font-family)

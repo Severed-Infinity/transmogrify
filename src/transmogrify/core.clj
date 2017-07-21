@@ -33,7 +33,7 @@
 
 (spec/fdef
   transmogrify
-  :args (spec/cat :language #{:html} :data coll?)
+  :args (spec/cat :language #{:html :fuse :java-fxml :default} :data coll?)
   :ret str)
 
 (transmogrify :html [[:html]])
