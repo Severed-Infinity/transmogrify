@@ -16,13 +16,13 @@
 (def pos-double (gen/fmap (fn [n] (if (pos? n) n 0.1)) gen/double))
 
 (defspec css-spec-magnitude-key-generative-test
-         10000
+         1000
          (prop/for-all
            [d pos-double]
            (s/valid? ::css-spec/magnitude d)))
 
 (defspec css-spec-unit-key-generative-test
-         10000
+         1000
          (prop/for-all
            [per-sym (gen/return :%)]
            (s/valid? ::css-spec/unit per-sym)))
@@ -33,20 +33,21 @@
     (gen/tuple gen/pos-int gen/pos-int)))
 
 (defspec css-spec-percentage-unit-string-generative-test
-         10000
+         1000
          (prop/for-all
            [per-str percentage-as-a-string]
            (s/valid? ::css-spec/percentage per-str)))
 
+;; FIXME needs to be looked at, expects an int to pass code coverage
 (defspec css-spec-percentage-unit-map-generative-test
-         10000
+         1000
          (prop/for-all
-           [m (s/gen ::css-spec/magnitude)
-            u (s/gen ::css-spec/unit)]
-           (s/valid? ::css-spec/percentage {:magnitude m :unit u})))
+           [input (gen/hash-map :magnitude pos-double
+                                 :unit (gen/return :%))]
+           (s/valid? ::css-spec/percentage input)))
 
 (defspec css-spec-font-family-generative-test
-         10000
+         1000
          (prop/for-all
            [inputs (gen/one-of [(gen/tuple gen/string)
                                 (gen/tuple (s/gen ::css-spec/generic))
@@ -64,28 +65,96 @@
     (gen/large-integer* {:min 1 :max 9})))
 
 (defspec css-spec-weight-number-generative-test
-         10000
+         1000
          (prop/for-all
            [n multiple-of-100-less-then-1000]
            (s/valid? ::css-spec/weight-number n)))
 
-#_(gen/sample multiple-of-100-less-then-1000)
-#_(gen/sample (s/gen ::css-spec/weight-number))
-
 (defspec css-spec-weight-value-generative-test
-         10000
+         1000
          (prop/for-all
            [val (gen/one-of [(gen/return :normal) (gen/return :bold) (gen/return :bolder) (gen/return :lighter)])]
            (s/valid? ::css-spec/weight-value val)))
 
 (defspec css-spec-font-weight-generative-test
-         10000
+         1000
          (prop/for-all
            [inputs (gen/one-of [(s/gen ::css-spec/weight-number) (s/gen ::css-spec/weight-value)])]
            (s/valid? ::css-spec/font-weight inputs)))
 
+(defspec css-spec-font-stretch-generative-test
+         1000
+         (prop/for-all
+           [inputs (gen/one-of [(s/gen ::css-spec/stretch-value)
+                                (s/gen ::css-spec/css-wide-keywords)
+                                (s/gen ::css-spec/percentage)])]
+           (s/valid? ::css-spec/font-stretch inputs)))
+
+(defspec css-spec-font-style-generative-test
+         1000
+         (prop/for-all
+           [inputs (gen/one-of [(gen/return :normal) (gen/return :italic) (gen/return :oblique)
+                                (gen/tuple (gen/return :oblique) (s/gen ::css-spec/angular-units))])]
+           (s/valid? ::css-spec/font-style inputs)))
+
+(defspec css-spec-font-size-generative-test
+         1000
+         (prop/for-all
+           [inputs (gen/one-of [(s/gen ::css-spec/absolute-size)
+                                (s/gen ::css-spec/relative-size)
+                                (s/gen ::css-spec/distance-units)
+                                (s/gen ::css-spec/percentage)])]
+           (s/valid? ::css-spec/font-size inputs)))
+
+(defspec css-spec-font-min-size-generative-test
+         1000
+         (prop/for-all
+           [inputs (gen/one-of [(s/gen ::css-spec/absolute-size)
+                                (s/gen ::css-spec/relative-size)
+                                (s/gen ::css-spec/distance-units)
+                                (s/gen ::css-spec/percentage)])]
+           (s/valid? ::css-spec/font-min-size inputs)))
+
+(defspec css-spec-font-max-size-generative-test
+         1000
+         (prop/for-all
+           [inputs (gen/one-of [(s/gen ::css-spec/absolute-size)
+                                (s/gen ::css-spec/relative-size)
+                                (s/gen ::css-spec/distance-units)
+                                (s/gen ::css-spec/percentage)
+                                (gen/return :infinity)])]
+           (s/valid? ::css-spec/font-max-size inputs)))
+
+(defspec css-spec-font-size-adjust-generative-test
+         1000
+         (prop/for-all
+           [inputs (gen/one-of [(gen/return :none) gen/large-integer gen/double])]
+           (s/valid? ::css-spec/font-size-adjust inputs)))
+
+(defspec css-spec-font-tuple-generative-test
+         ;;fixme need to add the rest of the properties
+         1000
+         (prop/for-all
+           [input (gen/tuple (s/gen ::css-spec/font-style)
+                             (s/gen ::css-spec/font-weight)
+                             (s/gen ::css-spec/font-stretch)
+                             (s/gen ::css-spec/font-size)
+                             (s/gen ::css-spec/font-family))]
+           (s/valid? ::css-spec/font input)))
+
+(defspec css-spec-font-system-fonts-generative-test
+         1000
+         (prop/for-all
+           [inputs (gen/one-of [(gen/return :caption)
+                                (gen/return :icon)
+                                (gen/return :menu)
+                                (gen/return :message-box)
+                                (gen/return :small-caption)
+                                (gen/return :status-bar)])]
+           (s/valid? ::css-spec/font inputs)))
+
 (defspec z-css-spec-properties-map-generative-test
-         10000
+         1000
          (prop/for-all
            [f-family (s/gen ::css-spec/font-family)
             f-weight (s/gen ::css-spec/font-weight)
