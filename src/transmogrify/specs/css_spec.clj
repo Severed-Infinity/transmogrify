@@ -35,6 +35,7 @@
                 #(gen/fmap
                    (fn [[n1 n2]] (str n1 "." n2 "%"))
                    (gen/tuple gen/pos-int gen/pos-int)))
+      ;; FIXME ISSUE coverage is only affected by namespaced keys
       :map (s/keys :req-un [::magnitude ::unit]))))
 
 ;;; DISTANCES
@@ -110,13 +111,9 @@
     ::font-family
     [(s/or :named ::named :generic ::generic :global ::css-wide-keywords)]))
 
-;;; small code coverage drop - fixed with a simple = test
-#_(defn multiple-of-100? [n] (zero? (mod n 100)))
 ;;FIXME possibly going to cause naming conflict later
 ;;TODO number keywords https://drafts.csswg.org/css-fonts-4/#valdef-font-weight-number
-;;; small code coverage drop - fixed with s/conform
 (s/def ::weight-number (st-ds/spec ::number (s/spec #{100 200 300 400 500 600 700 800 900})))
-
 (s/def ::weight-value (st-ds/spec ::value (s/spec #{:normal :bold :bolder :lighter})))
 
 (s/def ::font-weight

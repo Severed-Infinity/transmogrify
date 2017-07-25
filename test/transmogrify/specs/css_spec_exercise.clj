@@ -3,6 +3,7 @@
             [transmogrify.specs.css-spec :as css-spec]
             [clojure.spec.alpha :as s]))
 
+
 ;; FIXME s/form is not necessary
 #_(s/form ::css-spec/css-wide-keywords)
 (s/exercise ::css-spec/css-wide-keywords)
@@ -17,34 +18,36 @@
 ;; Removing conform and explain-data causes a massive code coverage drop
 ;; Exercise doesn't work 100% of the time, must affect code coverage
 #_(s/form ::css-spec/percentage)
-(s/exercise ::css-spec/percentage)
-(s/conform ::css-spec/percentage "100%")
-(s/conform ::css-spec/percentage "-65.45%")
-(s/conform ::css-spec/percentage "65.45")
-(s/conform ::css-spec/percentage "15")
-(s/conform ::css-spec/percentage 15)
-;;; FIXME map format is lacking code coverage
-(s/conform ::css-spec/percentage {::magnitude 16.0 ::unit :%})
-(s/conform ::css-spec/percentage {::magnitude 62 ::unit :%})
-(s/conform ::css-spec/percentage {:magnitude 16.0 :unit :%})
-(s/conform ::css-spec/percentage {::magnitude 16.0 :unit :%})
-(s/conform ::css-spec/percentage {:magnitude 16.0 ::unit :%})
-(s/conform ::css-spec/percentage {::magnitude 16.0})
-(s/conform ::css-spec/percentage {::unit :%})
-(s/conform ::css-spec/percentage [16.0 :%])
-(s/explain-data ::css-spec/percentage "-65.45%")
-(s/explain-data ::css-spec/percentage {::magnitude 16.0 ::unit :%})
-(s/explain-data ::css-spec/percentage {::magnitude 62 ::unit :%})
-(s/explain-data ::css-spec/percentage {:magnitude 16.0 :unit :%})
-(s/explain-data ::css-spec/percentage {::magnitude 16.0 :unit :%})
-(s/explain-data ::css-spec/percentage {:magnitude 16.0 ::unit :%})
-(s/explain-data ::css-spec/percentage {::magnitude 16.0})
-(s/explain-data ::css-spec/percentage {::unit :%})
-(s/explain-data ::css-spec/percentage [16.0 :%])
-(s/explain-data ::css-spec/percentage [:magnitude 16.0 :unit :%])
-(s/conform ::css-spec/percentage {:magnitude -73 :unit :%})
-(s/explain-data ::css-spec/percentage {:magnitude 16 :unit :%})
-(s/explain-data ::css-spec/percentage {::magnitude 16.0 ::unit :%})
+;(s/exercise ::css-spec/percentage)
+;(s/conform ::css-spec/percentage "100%")
+;(s/conform ::css-spec/percentage "-65.45%")
+;(s/conform ::css-spec/percentage "65.45")
+;(s/conform ::css-spec/percentage "15")
+;(s/conform ::css-spec/percentage 15)
+;;;; FIXME map format is lacking code coverage
+;(s/conform ::css-spec/percentage {::magnitude 16.0 ::unit :%})
+;(s/conform ::css-spec/percentage {::magnitude 62 ::unit :%})
+;(s/conform ::css-spec/percentage {:magnitude 16.0 :unit :%})
+;(s/conform ::css-spec/percentage {::magnitude 16.0 :unit :%})
+;(s/conform ::css-spec/percentage {:magnitude 16.0 ::unit :%})
+;(s/conform ::css-spec/percentage {::magnitude 16.0})
+;(s/conform ::css-spec/percentage {::unit :%})
+;(s/conform ::css-spec/percentage [16.0 :%])
+;(s/conform ::css-spec/percentage {:magnitude -73 :unit :%})
+;;; So it's the explain data that has the code coverage
+;(s/explain-data ::css-spec/percentage "-65.45%")
+;(s/explain-data ::css-spec/percentage {::magnitude 16.0 ::unit :%}) ;- namespaced keys
+;(s/explain-data ::css-spec/percentage {::magnitude 62 ::unit :%}) ;- namespaced keys
+;(s/explain-data ::css-spec/percentage {:magnitude 16.0 :unit :%})
+;(s/explain-data ::css-spec/percentage {::magnitude 16.0 :unit :%}) ;- namespaced keys
+;(s/explain-data ::css-spec/percentage {:magnitude 16.0 ::unit :%}) ;- provides most coverage
+;(s/explain-data ::css-spec/percentage {::magnitude 16.0}) ;- namespaced key
+;(s/explain-data ::css-spec/percentage {::unit :%}) ;- namespaced key
+;(s/explain-data ::css-spec/percentage [16.0 :%])
+;(s/explain-data ::css-spec/percentage [:magnitude 16.0 :unit :%])
+(s/explain-data ::css-spec/percentage {:magnitude 16 :unit :%}) ;- provides full coverage
+;(s/explain-data ::css-spec/percentage {:magnitude 16.0}) ;- full coverage
+;(s/explain-data ::css-spec/percentage {:unit :%})
 
 ;;;; DISTANCE
 ;;;; RELATIVE
