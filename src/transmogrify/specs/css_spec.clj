@@ -7,7 +7,6 @@
              [data-spec :as st-ds]
              [spec :as spec]]))
 
-;;; TODO move all s/form, s/exercise, s/conform, s/explain to testing file
 (s/def ::css-wide-keywords (st-ds/spec ::css-wide-keywords (s/spec #{:initial :inherit :unset :revert})))
 
 ;;;;;; UNITS ;;;;;;;;;
@@ -23,7 +22,6 @@
 (s/def ::unit #{:%})
 
 ;;; FIXME code coverage drop occurs here
-;;; FIXME possible fix would be a conformer/generator that for string has a number between 0-100 conjoined with %
 ;;; FIXME issue seems to be with the map branch - needs to cover namespaced keys too, unit is the issue?
 ;; NOTE percentage cannot be negative as < 0 or 0, 0.00000001 is acceptable
 (s/def ::percentage
@@ -63,7 +61,6 @@
 (s/def ::deg (st-ds/spec ::deg {:magnitude (s/int-in 0 361) :unit (s/spec #{:deg})}))
 ;;; small code coverage drop - fixed with s/conform
 (s/def ::grad (st-ds/spec ::grad {:magnitude (s/int-in 0 401) :unit (s/spec #{:grad})}))
-;; FIXME spec/double? -> 0-2pi
 ;; FIXME spec/double? issue with whole ints
 (s/def ::rad (st-ds/spec ::rad {:magnitude (s/and spec/double? #(< 0 % 6.2831853072)) :unit (s/spec #{:rad})}))
 ;; FIXME the range is a bit strange
@@ -99,6 +96,8 @@
 (s/def ::relative-size (st-ds/spec ::relative-size (s/spec #{:larger :smaller})))
 
 ;;; PROPERTIES
+
+;; TODO REMAINDER OF FONTS
 ;;; FONT
 (s/def ::named spec/string?)
 (s/def ::generic
@@ -130,12 +129,10 @@
       #{:normal :ultra-condensed :extra-condensed :condensed
         :semi-condensed :semi-expanded :expanded :extra-expanded :ultra-expanded})))
 
-;;; FIXME code coverage affected by percentage
 (s/def ::font-stretch
   (st-ds/spec
     ::font-stretch
     (s/or
-      ;;FIXME requires globals
       :value ::stretch-value
       :global ::css-wide-keywords
       ;;NOTE percentage is a css4 spec only thing
@@ -149,7 +146,6 @@
       :value (s/spec #{:normal :italic :oblique})
       :oblique-angle (s/cat :value (s/spec #{:oblique}) :angle ::angular-units))))
 
-;;; FIXME code coverage affected by percentage
 (s/def ::font-size
   (st-ds/spec
     ::font-size
@@ -159,7 +155,6 @@
       :length ::distance-units
       :percentage ::percentage)))
 
-;;; FIXME code coverage affected by percentage
 (s/def ::font-min-size
   (st-ds/spec
     ::font-min-size
@@ -169,7 +164,6 @@
       :length ::distance-units
       :percentage ::percentage)))
 
-;;; FIXME code coverage affect by percentage
 (s/def ::font-max-size
   (st-ds/spec
     ::font-max-size
@@ -187,8 +181,6 @@
       :none (s/spec #{:none})
       :number spec/number?)))
 
-;;; FIXME code coverage of the rest is affected by percentage
-;;; FIXME font is mostly likely going to lack code coverage due to optionals
 (s/def ::font
   (st-ds/spec
     ::font
@@ -212,6 +204,318 @@
       :none #{:none}
       :vector (s/coll-of (s/spec #{:weight :small-caps :style})))))
 
+(s/def ::font-feature-settings any?)
+(s/def ::font-kerning any?)
+(s/def ::font-language-override any?)
+
+;; TODO @font-face & @font-feature-values rules
+
+;; TODO font variant
+;; FONT VARIANT
+(s/def ::font-variant any?)
+(s/def ::font-variant-alternatives any?)
+(s/def ::font-variant-caps any?)
+(s/def ::font-variant-east-asian any?)
+(s/def ::font-variant-ligatures any?)
+(s/def ::font-variant-numeric any?)
+(s/def ::font-variant-position any?)
+
+;; TODO colour and background
+;; COLOUR
+(s/def ::color any?)
+(s/def ::opacity any?)
+
+;; BACKGROUND
+(s/def ::background-color any?)
+(s/def ::background-image any?)
+(s/def ::background-repeat any?)
+(s/def ::background-attachment any?)
+(s/def ::background-position any?)
+(s/def ::background-blend-mode any?)
+(s/def ::background-clip any?)
+(s/def ::background-origin any?)
+(s/def ::background-size any?)
+
+;; FIXME lot's to add to background property
+(s/def ::background (s/cat :color ::background-color
+                           :image ::background-image
+                           :repeat ::background-repeat
+                           :attachment ::background-attachment
+                           :position ::background-position))
+
+;; TODO border
+;; BORDER
+(s/def ::border-top-width any?)
+(s/def ::border-right-width any?)
+(s/def ::border-bottom-width any?)
+(s/def ::border-left-width any?)
+(s/def ::border-width any?)
+
+(s/def ::border-top-color any?)
+(s/def ::border-right-color any?)
+(s/def ::border-bottom-color any?)
+(s/def ::border-left-color any?)
+(s/def ::border-color any?)
+
+(s/def ::border-top-right-radius any?)
+(s/def ::border-top-left-radius any?)
+(s/def ::border-bottom-right-radius any?)
+(s/def ::border-bottom-left-radius any?)
+(s/def ::border-radius any?)
+
+(s/def ::border-top-style any?)
+(s/def ::border-right-style any?)
+(s/def ::border-bottom-style any?)
+(s/def ::border-left-style any?)
+(s/def ::border-style any?)
+
+(s/def ::border-image-outset any?)
+(s/def ::border-image-repeat any?)
+(s/def ::border-image-slice any?)
+(s/def ::border-image-source any?)
+(s/def ::border-image-width any?)
+(s/def ::border-image any?)
+
+(s/def ::border-top any?)
+(s/def ::border-right any?)
+(s/def ::border-bottom any?)
+(s/def ::border-left any?)
+(s/def ::border any?)
+
+(s/def ::box-decoration-break any?)
+(s/def ::box-shadow any?)
+
+;; TODO box
+;; BOX
+(s/def ::margin-top any?)
+(s/def ::margin-right any?)
+(s/def ::margin-bottom any?)
+(s/def ::margin-left any?)
+(s/def ::margin any?)
+
+(s/def ::padding-top any?)
+(s/def ::padding-right any?)
+(s/def ::padding-bottom any?)
+(s/def ::padding-left any?)
+(s/def ::padding any?)
+
+(s/def ::top any?)
+(s/def ::right any?)
+(s/def ::bottom any?)
+(s/def ::left any?)
+
+(s/def ::max-height any?)
+(s/def ::min-height any?)
+(s/def ::max-width any?)
+(s/def ::min-width any?)
+(s/def ::width any?)
+(s/def ::height any?)
+
+(s/def ::overflow any?)
+(s/def ::overflow-x any?)
+(s/def ::overflow-y any?)
+
+(s/def ::visibility any?)
+#_(s/def ::vertical-align any?)
+(s/def ::z-index any?)
+(s/def ::float any?)
+(s/def ::clear any?)
+(s/def ::clip any?)
+
+;; TODO flexible box
+;; FLEXIBLE BOX
+(s/def ::align-content any?)
+(s/def ::align-items any?)
+(s/def ::align-self any?)
+
+(s/def ::flex-basis any?)
+(s/def ::flex-direction any?)
+(s/def ::flex-flow any?)
+(s/def ::flex-grow any?)
+(s/def ::flex-shrink any?)
+(s/def ::flex-wrap any?)
+(s/def ::flex any?)
+
+(s/def ::justify-content any?)
+(s/def ::order any?)
+
+;; TODO text
+;; TEXT
+(s/def ::word-spacing any?)
+(s/def ::letter-spacing any?)
+#_(s/def ::text-decoration any?)
+;; FIXME duplicate of vertical align, decide which group it belongs too
+(s/def ::vertical-align any?)
+(s/def ::text-transform any?)
+(s/def ::text-align any?)
+(s/def ::text-indent any?)
+(s/def ::line-height any?)
+(s/def ::hanging-punctuation any?)
+(s/def ::hyphens any?)
+(s/def ::line-break any?)
+(s/def ::overflow-wrap any?)
+(s/def ::tab-size any?)
+(s/def ::text-align-last any?)
+(s/def ::text-combine-upright any?)
+(s/def ::text-justify any?)
+(s/def ::white-space any?)
+(s/def ::word-break any?)
+(s/def ::word-spacing any?)
+(s/def ::word-wrap any?)
+
+;; TODO text decoration
+;; TEXT DECORATION
+(s/def ::text-decoration any?)
+(s/def ::text-decoration-color any?)
+(s/def ::text-decoration-line any?)
+(s/def ::text-decoration-style any?)
+(s/def ::text-shadow any?)
+(s/def ::text-underline-position any?)
+
+;; TODO writing modes
+;; WRITING MODES
+(s/def ::direction any?)
+(s/def ::text-orientation any?)
+#_(s/def ::text-combine-upright any?)
+(s/def ::unicode-bidi any?)
+(s/def ::user-select any?)
+(s/def ::writing-mode any?)
+
+;; TODO table
+;; TABLE
+(s/def ::border-collapse any?)
+(s/def ::border-spacing any?)
+(s/def ::caption-side any?)
+(s/def ::empty-cell any?)
+(s/def ::table-layout any?)
+
+;; TODO lists and counters
+;; LISTS & COUNTERS
+(s/def ::counter-increment any?)
+(s/def ::counter-reset any?)
+(s/def ::list-style any?)
+(s/def ::list-style-type any?)
+(s/def ::list-style-image any?)
+(s/def ::list-style-position any?)
+
+;; TODO animation
+;; ANIMATION
+(s/def ::animation any?)
+(s/def ::animation-delay any?)
+(s/def ::animation-direction any?)
+(s/def ::animation-duration any?)
+(s/def ::animation-fill-mode any?)
+(s/def ::animation-iteration-count any?)
+(s/def ::animation-name any?)
+(s/def ::animation-play-state any?)
+(s/def ::animation-timing-function any?)
+;; TODO @keyframes rule
+
+;; TODO transform
+;; TRANSFORM
+(s/def ::backface-visibility any?)
+(s/def ::perspective any?)
+(s/def ::perspective-origin any?)
+(s/def ::transform any?)
+(s/def ::transform-origin any?)
+(s/def ::transform-style any?)
+
+;; TODO transitions
+;; TRANSITIONS
+(s/def ::transition any?)
+(s/def ::transition-property any?)
+(s/def ::transition-duration any?)
+(s/def ::transition-timing-function any?)
+(s/def ::transition-delay any?)
+
+;; TODO basic user interface
+;; BASIC USER INTERFACE
+(s/def ::box-sizing any?)
+(s/def ::display any?)
+(s/def ::content any?)
+(s/def ::cursor any?)
+(s/def ::ime-mode any?)
+(s/def ::nav-down any?)
+(s/def ::nav-up any?)
+(s/def ::nav-left any?)
+(s/def ::nav-right any?)
+(s/def ::nav-index any?)
+(s/def ::outline any?)
+(s/def ::outline-color any?)
+(s/def ::outline-offset any?)
+(s/def ::outline-style any?)
+(s/def ::outline-width any?)
+(s/def ::resize any?)
+(s/def ::text-overflow any?)
+
+;; TODO multi-column layout
+;; MULTI-COLUMN LAYOUT
+(s/def ::break-after any?)
+(s/def ::break-before any?)
+(s/def ::break-inside any?)
+(s/def ::column-count any?)
+(s/def ::column-fill any?)
+(s/def ::column-gap any?)
+(s/def ::column-rule any?)
+(s/def ::column-rule-color any?)
+(s/def ::column-rule-width any?)
+(s/def ::column-span any?)
+(s/def ::column-width any?)
+(s/def ::columns any?)
+
+;; TODO paged media
+;; PAGED MEDIA
+(s/def ::windows any?)
+(s/def ::orphans any?)
+(s/def ::page-break-after any?)
+(s/def ::page-break-before any?)
+(s/def ::page-break-inside any?)
+
+(s/def ::marks any?)
+(s/def ::quotes any?)
+
+;; TODO filter effects
+;; FILTER EFFECTS
+(s/def ::filter any?)
+
+;; TODO image values and replaced content
+;; IMAGE VALUES & REPLACED CONTENT
+(s/def ::image-orientation any?)
+(s/def ::image-rendering any?)
+(s/def ::image-resolution any?)
+(s/def ::object-fit any?)
+(s/def ::object-position any?)
+
+;; TODO masking
+;; MASKING
+(s/def ::mask any?)
+(s/def ::mask-type any?)
+
+;; TODO speech
+;; SPEECH
+(s/def ::mark any?)
+(s/def ::mark-after any?)
+(s/def ::mark-before any?)
+(s/def ::phonemes any?)
+(s/def ::rest any?)
+(s/def ::rest-after any?)
+(s/def ::rest-before any?)
+(s/def ::voice-balance any?)
+(s/def ::voice-duration any?)
+(s/def ::voice-pitch any?)
+(s/def ::voice-pitch-range any?)
+(s/def ::voice-rate any?)
+(s/def ::voice-stress any?)
+(s/def ::voice-volume any?)
+
+;; TODO marquee
+;; MARQUEE
+(s/def ::marquee-direction any?)
+(s/def ::marquee-play-count any?)
+(s/def ::marquee-speed any?)
+(s/def ::marquee-style any?)
+
+;; FIXME complete properties
 (s/def ::properties
   (st-ds/spec
     ::properties
