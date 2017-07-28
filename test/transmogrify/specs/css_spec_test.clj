@@ -8,21 +8,22 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.clojure-test :refer [defspec]]))
 
-(test/run-tests)
+(def number-of-tests 10000)
+
+;; TODO css spec units property tests
 
 ;; FIXME I am an idiot, I should be testing with s/valid? and not s/conform
-;; TODO property base testing
 
 (def pos-double (gen/fmap (fn [n] (if (pos? n) n 0.1)) gen/double))
 
 (defspec css-spec-magnitude-key-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [d pos-double]
            (s/valid? ::css-spec/magnitude d)))
 
 (defspec css-spec-unit-key-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [per-sym (gen/return :%)]
            (s/valid? ::css-spec/unit per-sym)))
@@ -33,21 +34,21 @@
     (gen/tuple gen/pos-int gen/pos-int)))
 
 (defspec css-spec-percentage-unit-string-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [per-str percentage-as-a-string]
            (s/valid? ::css-spec/percentage per-str)))
 
 ;; FIXME needs to be looked at, expects an int to pass code coverage
 (defspec css-spec-percentage-unit-map-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [input (gen/hash-map :magnitude pos-double
                                  :unit (gen/return :%))]
            (s/valid? ::css-spec/percentage input)))
 
 (defspec css-spec-font-family-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [inputs (gen/one-of [(gen/tuple gen/string)
                                 (gen/tuple (s/gen ::css-spec/generic))
@@ -58,32 +59,31 @@
                                 (gen/tuple gen/string (s/gen ::css-spec/generic) (s/gen ::css-spec/css-wide-keywords))])]
            (s/valid? ::css-spec/font-family inputs)))
 
-;; FIXME only produces 400 99% of the time and 100 the others
 (def multiple-of-100-less-then-1000
   (gen/fmap
     (fn [n] (* n 100))
     (gen/large-integer* {:min 1 :max 9})))
 
 (defspec css-spec-weight-number-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [n multiple-of-100-less-then-1000]
            (s/valid? ::css-spec/weight-number n)))
 
 (defspec css-spec-weight-value-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [val (gen/one-of [(gen/return :normal) (gen/return :bold) (gen/return :bolder) (gen/return :lighter)])]
            (s/valid? ::css-spec/weight-value val)))
 
 (defspec css-spec-font-weight-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [inputs (gen/one-of [(s/gen ::css-spec/weight-number) (s/gen ::css-spec/weight-value)])]
            (s/valid? ::css-spec/font-weight inputs)))
 
 (defspec css-spec-font-stretch-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [inputs (gen/one-of [(s/gen ::css-spec/stretch-value)
                                 (s/gen ::css-spec/css-wide-keywords)
@@ -91,14 +91,14 @@
            (s/valid? ::css-spec/font-stretch inputs)))
 
 (defspec css-spec-font-style-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [inputs (gen/one-of [(gen/return :normal) (gen/return :italic) (gen/return :oblique)
                                 (gen/tuple (gen/return :oblique) (s/gen ::css-spec/angular-units))])]
            (s/valid? ::css-spec/font-style inputs)))
 
 (defspec css-spec-font-size-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [inputs (gen/one-of [(s/gen ::css-spec/absolute-size)
                                 (s/gen ::css-spec/relative-size)
@@ -107,7 +107,7 @@
            (s/valid? ::css-spec/font-size inputs)))
 
 (defspec css-spec-font-min-size-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [inputs (gen/one-of [(s/gen ::css-spec/absolute-size)
                                 (s/gen ::css-spec/relative-size)
@@ -116,7 +116,7 @@
            (s/valid? ::css-spec/font-min-size inputs)))
 
 (defspec css-spec-font-max-size-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [inputs (gen/one-of [(s/gen ::css-spec/absolute-size)
                                 (s/gen ::css-spec/relative-size)
@@ -126,14 +126,14 @@
            (s/valid? ::css-spec/font-max-size inputs)))
 
 (defspec css-spec-font-size-adjust-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [inputs (gen/one-of [(gen/return :none) gen/large-integer gen/double])]
            (s/valid? ::css-spec/font-size-adjust inputs)))
 
 (defspec css-spec-font-tuple-generative-test
          ;;fixme need to add the rest of the properties
-         1000
+         number-of-tests
          (prop/for-all
            [input (gen/tuple (s/gen ::css-spec/font-style)
                              (s/gen ::css-spec/font-weight)
@@ -143,7 +143,7 @@
            (s/valid? ::css-spec/font input)))
 
 (defspec css-spec-font-system-fonts-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [inputs (gen/one-of [(gen/return :caption)
                                 (gen/return :icon)
@@ -154,7 +154,7 @@
            (s/valid? ::css-spec/font inputs)))
 
 (defspec z-css-spec-properties-map-generative-test
-         1000
+         number-of-tests
          (prop/for-all
            [f-family (s/gen ::css-spec/font-family)
             f-weight (s/gen ::css-spec/font-weight)
@@ -177,13 +177,12 @@
               :font           f-font
               :font-synthesis f-synthesis})))
 
-
 (test/deftest css-spec-unit-tests
   (test/testing "css unit specs"
     (test/testing "-> percentage units"
-      (test/is (s/valid? ::css-spec/magnitude 10.5)) "only doubles allowed"
+      (test/is (s/valid? ::css-spec/magnitude 10.5) "only doubles allowed")
       (test/is (not (s/valid? ::css-spec/magnitude 50)) "anything but a double should be invalid")
-      (test/is (s/valid? ::css-spec/unit :%)) "only the percentage sign (:%) as a keyword allowed"
+      (test/is (s/valid? ::css-spec/unit :%) "only the percentage sign (:%) as a keyword allowed")
       (test/is (not (s/valid? ::css-spec/unit :percentage)) "anything but :% should be invalid")
 
       (test/is (not (s/valid? ::css-spec/percentage "100")) "should be invalid for not having % at the end")
@@ -193,6 +192,7 @@
                "even though % is at the end it should be invalid for not having a number before it")
       (test/is (s/valid? ::css-spec/percentage {:magnitude 16.0 :unit :%})
                "map format should be valid")
+      (test/is (not (s/valid? ::css-spec/percentage {:magnitude 16 :unit :%})) "ints should be invalid")
       (test/is (not (s/valid? ::css-spec/percentage {::css-spec/magnitude 75.76 ::css-spec/unit :%}))
                "namespaced map format should be invalid")
       (test/is (not (s/valid? ::css-spec/percentage [16.0 :%])) "anything else should be invalid"))
@@ -253,15 +253,14 @@
 
   (test/testing "-> unit groups"))
 
-
 (test/deftest css-spec-property-tests
   (test/testing "css font specs"
     (test/testing "-> font family spec"
       ;; TODO Sub specs
       ;; FIXME proper output comparison
-      (test/is (s/valid? ::css-spec/font-family ["helvetica"])) "coll of a single font as a string"
-      (test/is (s/valid? ::css-spec/font-family [:serif])) "coll of a single font from generics"
-      (test/is (s/valid? ::css-spec/font-family ["helvetica" :serif])) "coll of multiple mixed font options"
+      (test/is (s/valid? ::css-spec/font-family ["helvetica"]) "coll of a single font as a string")
+      (test/is (s/valid? ::css-spec/font-family [:serif]) "coll of a single font from generics")
+      (test/is (s/valid? ::css-spec/font-family ["helvetica" :serif]) "coll of multiple mixed font options")
       (test/is (not (s/valid? ::css-spec/font-family "helvetica")) "string font should be invalid")
       (test/is (not (s/valid? ::css-spec/font-family :serif)) "keyword generic font should be invalid"))
 
@@ -272,7 +271,7 @@
           (test/is (true? (css-spec/multiple-of-100? -200)) "negative 100's should be true")
           (test/is (false? (css-spec/multiple-of-100? 90)) "not a multiple of 100, should be false")
           (test/is (false? (css-spec/multiple-of-100? 1110)) "not a multiple of 100, should be false")
-          (test/is (false? (css-spec/multiple-of-100? -330)))) "not a multiple of 100, should be false"
+          (test/is (false? (css-spec/multiple-of-100? -330))) "not a multiple of 100, should be false")
 
       (test/testing "-> testing weight number"
         (test/is (s/valid? ::css-spec/weight-number 400))
