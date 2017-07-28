@@ -21,7 +21,6 @@
     #(gen/fmap (fn [n] (if (pos? n) n 0.1)) gen/double)))
 (s/def ::unit #{:%})
 
-;;; FIXME code coverage drop occurs here
 ;;; FIXME issue seems to be with the map branch - needs to cover namespaced keys too, unit is the issue?
 ;; NOTE percentage cannot be negative as < 0 or 0, 0.00000001 is acceptable
 (s/def ::percentage
@@ -61,8 +60,7 @@
 (s/def ::deg (st-ds/spec ::deg {:magnitude (s/int-in 0 361) :unit (s/spec #{:deg})}))
 ;;; small code coverage drop - fixed with s/conform
 (s/def ::grad (st-ds/spec ::grad {:magnitude (s/int-in 0 401) :unit (s/spec #{:grad})}))
-;; FIXME spec/double? issue with whole ints
-(s/def ::rad (st-ds/spec ::rad {:magnitude (s/and spec/double? #(< 0 % 6.2831853072)) :unit (s/spec #{:rad})}))
+(s/def ::rad (st-ds/spec ::rad {:magnitude (s/and spec/number? #(< 0 % 6.2831853072)) :unit (s/spec #{:rad})}))
 ;; FIXME the range is a bit strange
 (s/def ::turn (st-ds/spec ::turn {:magnitude (s/and spec/number? #(< 0 % 1.01)) :unit (s/spec #{:turn})}))
 
