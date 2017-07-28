@@ -228,6 +228,8 @@
                "anything outside of 0 and 300 should be invalid")
       (test/is (s/valid? ::css-spec/rad {:magnitude 6.2 :unit :rad})
                "should be between 0 and 2pi")
+      (test/is (s/valid? ::css-spec/rad {:magnitude 3 :unit :rad})
+               "should be between 0 and 2pi")
       (test/is (not (s/valid? ::css-spec/rad {:magnitude 65.89 :unit :rad}))
                "anything outside of  0 and 2pi(inclusive) should be invalid")
       (test/is (s/valid? ::css-spec/turn {:magnitude 0.2 :unit :turn})
