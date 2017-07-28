@@ -335,9 +335,32 @@
 (s/def ::flex-shrink any?)
 (s/def ::flex-wrap any?)
 (s/def ::flex any?)
+(s/def ::flex-item-align any?)
+(s/def ::flex-line-pack any?)
+(s/def ::flex-order any?)
+(s/def ::flex-pack any?)
 
 (s/def ::justify-content any?)
 (s/def ::order any?)
+
+;; TODO grid layout
+;; GRID LAYOUT
+(s/def ::grid any?)
+(s/def ::grid-area any?)
+(s/def ::grid-auto-columns any?)
+(s/def ::grid-auto-flow any?)
+(s/def ::grid-auto-position any?)
+(s/def ::grid-auto-rows any?)
+(s/def ::grid-column any?)
+(s/def ::grid-column-start any?)
+(s/def ::grid-column-end any?)
+(s/def ::grid-row any?)
+(s/def ::grid-row-start any?)
+(s/def ::grid-row-end any?)
+(s/def ::grid-template any?)
+(s/def ::grid-template-areas any?)
+(s/def ::grid-template-rows any?)
+(s/def ::grid-template-columns any?)
 
 ;; TODO text
 ;; TEXT
@@ -362,6 +385,7 @@
 (s/def ::word-break any?)
 (s/def ::word-spacing any?)
 (s/def ::word-wrap any?)
+(s/def ::text-space-collapse any?)
 
 ;; TODO text decoration
 ;; TEXT DECORATION
@@ -371,6 +395,11 @@
 (s/def ::text-decoration-style any?)
 (s/def ::text-shadow any?)
 (s/def ::text-underline-position any?)
+(s/def ::text-decoration-skip any?)
+(s/def ::text-emphasis any?)
+(s/def ::text-emphasis-color any?)
+(s/def ::text-emphasis-style any?)
+(s/def ::text-emphasis-position any?)
 
 ;; TODO writing modes
 ;; WRITING MODES
