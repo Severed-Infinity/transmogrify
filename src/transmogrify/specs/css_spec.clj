@@ -493,20 +493,38 @@
 
 ;; TODO speech
 ;; SPEECH
+(s/def ::azimuth any?)
+(s/def ::cue any?)
+(s/def ::cue-after any?)
+(s/def ::cue-before any?)
+(s/def ::elevation any?)
 (s/def ::mark any?)
 (s/def ::mark-after any?)
 (s/def ::mark-before any?)
+(s/def ::pause any?)
+(s/def ::pause-after any?)
+(s/def ::pause-before any?)
 (s/def ::phonemes any?)
+(s/def ::play-duration any?)
 (s/def ::rest any?)
 (s/def ::rest-after any?)
 (s/def ::rest-before any?)
+(s/def ::richness any?)
+(s/def ::speak any?)
+(s/def ::speak-header any?)
+(s/def ::speak-numeral any?)
+(s/def ::speak-punctuation any?)
+(s/def ::speech-rate any?)
+(s/def ::stress any?)
 (s/def ::voice-balance any?)
 (s/def ::voice-duration any?)
+(s/def ::voice-family any?)
 (s/def ::voice-pitch any?)
 (s/def ::voice-pitch-range any?)
 (s/def ::voice-rate any?)
 (s/def ::voice-stress any?)
 (s/def ::voice-volume any?)
+(s/def ::volume any?)
 
 ;; TODO marquee
 ;; MARQUEE
