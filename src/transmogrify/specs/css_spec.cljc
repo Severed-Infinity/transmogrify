@@ -200,9 +200,15 @@
       :none #{:none}
       :vector (s/coll-of (s/spec #{:weight :small-caps :style})))))
 
-(s/def ::font-feature-settings any?)
-(s/def ::font-kerning any?)
-(s/def ::font-language-override any?)
+;; FIXME string has some strict conditions to be met https://www.w3.org/TR/css-fonts-3/#feature-tag-value
+(s/def ::feature-tag-value (s/cat :string string? :value (s/? (s/or :int int? :key #{:on :off}))))
+(s/def ::font-feature-settings
+  (st-ds/spec ::font-feature-settings
+              (s/or :normal (s/spec #{:normal})
+                    :feature-tag-value ::feature-tag-value)))
+(s/def ::font-kerning (st-ds/spec ::font-kerning (s/spec #{:auto :normal :none})))
+;; FIXME string has some strict conditions https://www.w3.org/TR/css-fonts-3/#propdef-font-language-override
+(s/def ::font-language-override (st-ds/spec ::font-language-override (s/or :normal (s/spec #{:normal}) :string string?)))
 
 ;; TODO @font-face & @font-feature-values rules
 
