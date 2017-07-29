@@ -221,6 +221,11 @@
 (s/exercise ::css-spec/font-synthesis)
 (s/conform ::css-spec/font-synthesis [:weight])
 
+(s/exercise ::css-spec/feature-tag-value)
+(s/exercise ::css-spec/font-feature-settings)
+(s/exercise ::css-spec/font-kerning)
+(s/exercise ::css-spec/font-language-override)
+
 (s/form ::css-spec/properties)
 (s/exercise ::css-spec/properties)
 (s/conform
