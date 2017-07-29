@@ -226,6 +226,10 @@
 (s/exercise ::css-spec/font-kerning)
 (s/exercise ::css-spec/font-language-override)
 
+(s/exercise ::css-spec/font-variant-numeric)
+(s/exercise ::css-spec/font-variant-caps)
+(s/exercise ::css-spec/font-variant-position)
+
 (s/form ::css-spec/properties)
 (s/exercise ::css-spec/properties)
 (s/conform
