@@ -30,6 +30,7 @@
 (defn- html-styles->str [styles]
   (str/join (map (fn [[k v]] (str (name k) ":" v ";")) styles)))
 
+;; FIXME this doesn't feel right
 (defn- html-attrs->str [attrs]
   (str/join
     (map
@@ -46,7 +47,7 @@
   
 (html-attrs->str {:class "test me"
                   :style {:bg "#fff"}})
-(html-attrs->str {})
+(html-attrs->str {:font-family ["hello" "goodbye"]})
 
 (defn- normalise-html
   ;;TODO include id's and classes e.g. div#content.container.black-bg
@@ -59,20 +60,24 @@
 
 (normalise-html [:html [:head [:title]] [:body [:img] [:p]]])
 
+;; FIXME needs work
 (defn- void-tag?
   [tag]
-  (let [tag-type (spec/or :void ::html/void-elements)           
-        conformed-tag (spec/conform tag-type tag)]
+  (let [tag-type ::html/void-elements
+        #_conformed-tag #_(spec/conform tag-type tag)]
     (if (spec/valid? tag-type tag)
-      (case (first conformed-tag)
-        :void true
-        :unescapable false)
+      #_(case (first conformed-tag)
+          :void true
+          :unescapable false)
+      true
       false)))
 
 (void-tag? :script)
 (void-tag? :base)
 (void-tag? :p)
 (void-tag? :img)
+(void-tag? :table)
+(void-tag? :hr)
 
 (defn- html->str
   ;;TODO apply spec rules about tags and order
@@ -89,10 +94,12 @@
 
 (html->str [:base])
 (html->str [:html])
+(html->str [:input])
+(html->str [:embed])
 
 (html->str [:html {} [:head [:title {}] [:body {} [:img {} ] [:p]]]])
 
-(html->str [:html [:head [:title]]])
+(html->str [:html [:head [:title [:link]]]])
 
 (stest/instrument)
 

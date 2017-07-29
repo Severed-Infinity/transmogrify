@@ -79,8 +79,7 @@
 
 ;;; UNIT GROUPS
 ;; FIXME distance vs length naming
-(s/def ::relative-distance-units
-  (s/or :em ::em :ex ::ex :ch ::ch :rem ::rem :vh ::vh :vw ::vw :vmin ::vmin :vmax ::vmax))
+(s/def ::relative-distance-units (s/or :em ::em :ex ::ex :ch ::ch :rem ::rem :vh ::vh :vw ::vw :vmin ::vmin :vmax ::vmax))
 (s/def ::absolute-distance-units (s/or :cm ::cm :mm ::mm :q ::q :in ::in :pc ::pc :pt ::pt :px ::px))
 (s/def ::distance-units (s/or :relative ::relative-distance-units :absolute ::absolute-distance-units))
 (s/def ::duration-units (s/or :s ::s :ms ::ms))
@@ -89,8 +88,7 @@
 (s/def ::resolution-units (s/or :dpi ::dpi :dpcm ::dpcm :dppx ::dppx))
 
 ;;; FONT SPECIFIC UNITS
-(s/def ::absolute-size
-  (st-ds/spec ::absolute-size (s/spec #{:xx-small :x-small :small :medium :large :x-large :xx-large})))
+(s/def ::absolute-size (st-ds/spec ::absolute-size (s/spec #{:xx-small :x-small :small :medium :large :x-large :xx-large})))
 (s/def ::relative-size (st-ds/spec ::relative-size (s/spec #{:larger :smaller})))
 
 ;;; PROPERTIES
@@ -220,6 +218,7 @@
 
 ;; TODO colour and background
 ;; COLOUR
+;; TODO leave till last?
 (s/def ::color any?)
 (s/def ::opacity any?)
 
