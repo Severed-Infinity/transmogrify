@@ -1,6 +1,6 @@
 (ns transmogrify.core
   (:require [transmogrify.internal :refer :all]
-            [transmogrify.wip :refer :all]
+            [transmogrify.wips.wip :refer :all]
             [clojure.spec.alpha :as spec]
             [clojure.spec.test.alpha :as stest]
             [spec-tools.spec :as st]))

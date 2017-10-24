@@ -216,11 +216,25 @@
 ;; FONT VARIANT
 (s/def ::font-variant any?)
 (s/def ::font-variant-alternatives any?)
-(s/def ::font-variant-caps any?)
+(s/def ::font-variant-caps
+  (st-ds/spec ::font-variant-caps
+              (s/spec #{:normal :small-caps :all-small-caps :petite-caps :all-petite-caps :unicase :titling-caps})))
 (s/def ::font-variant-east-asian any?)
 (s/def ::font-variant-ligatures any?)
-(s/def ::font-variant-numeric any?)
-(s/def ::font-variant-position any?)
+
+(s/def ::numeric-figure-values #{:lining-numbers :oldstyle-nums})
+(s/def ::numeric-spacing-values #{:proportional-nums :tabular-nums})
+(s/def ::numeric-fraction-values #{:diagonal-fractions :stack-fractions})
+(s/def ::numeric-other-values #{:ordinal :slashed-zero})
+(s/def ::font-variant-numeric
+  (st-ds/spec ::font-variant-numeric
+              (s/or :normal (s/spec #{:normal})
+                    :numeric-values (s/+ (s/or :figure ::numeric-figure-values
+                                               :spacing ::numeric-spacing-values
+                                               :fraction ::numeric-fraction-values
+                                               :other ::numeric-other-values)))))
+
+(s/def ::font-variant-position (st-ds/spec ::font-variant-position (s/spec #{:normal :sub :super})))
 
 ;; TODO colour and background
 ;; COLOUR

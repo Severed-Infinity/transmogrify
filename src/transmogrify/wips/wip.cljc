@@ -1,4 +1,4 @@
-(ns transmogrify.wip
+(ns transmogrify.wips.wip
   (:require [transmogrify.internal :refer :all]
             #_[transmogrify.specs.html_spec :as html]
             [clojure.spec.alpha :as spec]
