@@ -22,13 +22,14 @@
            (str/join (map #(html-tag->str %) content))
            "</"(name tag)">"))))
 
+;; FIXME name transmogrification instead of transmogrifier
 (defmethod transmogrifier :html
   [_ data]
   #_{:pre [(spec/valid? :transmogrify.html/element data)]}
-  (spec/conform :transmogrify.html/element data))
+  #_(spec/explain :transmogrify.specs.html_spec/elements data) data)
 
-(transmogrifier :html [:html  [:p]])
-#_(transmogrifier ::html [:html {} [:head [:title {}] [:body {} [:img {} ] [:p]]]])
+(transmogrifier :html [:html [:body [:p "hello"]]])
+#_(transmogrifier :html [:html {} [:head [:title {}] [:body {} [:img {} ] [:p]]]])
 
 (comment
   (defmethod transmogrifier ::html
