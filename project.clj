@@ -8,7 +8,7 @@
                  [org.clojure/clojurescript "1.9.946"]
                  [org.clojure/spec.alpha "0.1.123"]
                  [org.clojure/core.specs.alpha "0.1.24"]
-                 [metosin/spec-tools "0.3.3"]]
+                 [metosin/spec-tools "0.5.0"]]
   :plugins [[lein-cloverage "1.0.9"]]
   :profiles {:dev {:dependencies [[org.clojure/test.check "0.9.0"]
                                   [cloverage/cloverage "1.0.9"]]}}
