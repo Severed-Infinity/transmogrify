@@ -1,6 +1,7 @@
 (ns transmogrify.wips.wip
   (:require [transmogrify.internal :refer :all]
             #_[transmogrify.specs.html_spec :as html]
+            [transmogrify.specs.html :as html1]
             [clojure.spec.alpha :as spec]
             [clojure.pprint :as pp]
             [clojure.string :as str]
@@ -26,7 +27,7 @@
 (defmethod transmogrifier :html
   [_ data]
   #_{:pre [(spec/valid? :transmogrify.html/element data)]}
-  #_(spec/explain :transmogrify.specs.html_spec/elements data) data)
+  (spec/conform :transmogrify.html/element data) #_data)
 
 (transmogrifier :html [:html [:body [:p "hello"]]])
 #_(transmogrifier :html [:html {} [:head [:title {}] [:body {} [:img {} ] [:p]]]])
