@@ -27,7 +27,9 @@
 (defmethod transmogrifier :html
   [_ data]
   #_{:pre [(spec/valid? :transmogrify.html/element data)]}
-  (spec/conform :transmogrify.html/element data) #_data)
+  (if-let [output (spec/conform :transmogrify.html/element data) #_data]
+    output
+    (spec/explain-data :transmogrify.html/element data)))
 
 (transmogrifier :html [:html [:body [:p "hello"]]])
 #_(transmogrifier :html [:html {} [:head [:title {}] [:body {} [:img {} ] [:p]]]])

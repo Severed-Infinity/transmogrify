@@ -13,7 +13,9 @@
            <p>hello</p>
          </body>
        </html>"
-  [language & data]
+  ;; FIXME using & data causes nesting issues, I guess I had the idea of multiple pages?
+  ;;   this means the transformation function I was using wouldn't of worked right
+  [language data]
   (comment 
     "from the data we want an element of which is a tag and content a.k.a data/element"
     "we recurively transform the data and generate the apprioate file with contents"
@@ -33,10 +35,10 @@
 
 (spec/fdef
   transmogrify
-  :args (spec/cat :language #{:html :fuse :java-fxml :default} :data coll?)
+  :args (spec/cat :language #{:html :fuse :java-fxml :default} :data vector?)
   :ret str)
 
-(transmogrify :html [[:html]])
+(transmogrify :html [:html [:body]])
 
 
 #_(defn -main []
