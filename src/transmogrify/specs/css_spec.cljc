@@ -45,6 +45,12 @@
 (s/def ::vw (st-ds/spec ::vw {:magnitude spec/double? :unit (s/spec #{:vw})}))
 (s/def ::vmin (st-ds/spec ::vmin {:magnitude spec/double? :unit (s/spec #{:vmin})}))
 (s/def ::vmax (st-ds/spec ::vmax {:magnitude spec/double? :unit (s/spec #{:vmax})}))
+(s/def ::cap any?)
+(s/def ::ic any?)
+(s/def ::lh any?)
+(s/def ::rlh any?)
+(s/def ::vi any?)
+(s/def ::vb any?)
 
 ;;; ABSOLUTE
 (s/def ::cm (st-ds/spec ::cm {:magnitude spec/double? :unit (s/spec #{:cm})}))

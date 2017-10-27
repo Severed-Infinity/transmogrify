@@ -6,7 +6,7 @@
                 matches the language spec provided and the transformation algorithm"
   :dependencies [[org.clojure/clojure "1.9.0-beta2"]
                  [org.clojure/clojurescript "1.9.946"]
-                 [org.clojure/spec.alpha "0.1.123"]
+                 [org.clojure/spec.alpha "0.1.134"]
                  [org.clojure/core.specs.alpha "0.1.24"]
                  [metosin/spec-tools "0.5.0"]]
   :plugins [[lein-cloverage "1.0.9"]]
