@@ -36,12 +36,12 @@
 
 (defn css
   "core function for clojure to css - and to files?"
-  [css]
-  css)
+  [data]
+  data)
 
 
 
-(read-unit "10px")
+(read-unit "-10px")
 (unit "10px")
 (unit {:magnitude 10 :unit :px})
 (unit "10px" :em)
