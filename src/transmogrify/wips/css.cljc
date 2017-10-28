@@ -116,9 +116,15 @@
                   :Hz 1000}
 
    ;; Resolution units
-   :dpi          {:dpi 1}
-   :dpcm         {:dpcm 1}
-   :dppx         {:dppx 1}})
+   :dpi          {:dpi 1
+                  :dpcm 2.54
+                  :dppx 0.01041666667}
+   :dpcm         {:dpcm 1
+                  :dpi 0.39
+                  :dppx 37.795275591}
+   :dppx         {:dppx 1
+                  :dpi 96
+                  :dpcm 243.84}})
 
 
 (defn convert
