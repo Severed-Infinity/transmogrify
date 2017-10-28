@@ -4,7 +4,7 @@
                 
                 Given a nested (vector) datastructure transform it into the given language provided it 
                 matches the language spec provided and the transformation algorithm"
-  :dependencies [[org.clojure/clojure "1.9.0-aplha17"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha17"]
                  [org.clojure/clojurescript "1.9.854"]
                  [org.clojure/spec.alpha "0.1.123"]
                  [org.clojure/core.specs.alpha "0.1.10"]
