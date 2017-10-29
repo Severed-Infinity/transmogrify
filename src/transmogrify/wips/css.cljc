@@ -1,15 +1,15 @@
 (ns transmogrify.wips.css
-  (:require [clojure.string :refer [split]]))
+    #?@(:cljs [(:require [cljs.reader :refer [read-string]])]))
 
 (def
-  ^{:doc     "Regular expression for matching a CSS unit. The magnitude
-             and unit are captured."
-    :private true}
+  ^{:private true
+    :doc     "Regular expression for matching a CSS unit. The magnitude
+             and unit are captured."}
   css-unit-regex
   ;; TODO make sure all units are here
   #"([+-]?\d+(?:\.?\d+)?)(p[xtc]|in|[cm]m|%|r?em|ex|ch|v(?:[wh]|m(?:in|ax))|deg|g?rad|turn|m?s|k?Hz|dp(?:i|cm|px))")
 
-(defn read-unit
+(defn- read-unit
   "Read a `CSSUnit` object from the string `s`."
   [s]
   (when-let [[_ magnitude unit] (re-matches css-unit-regex s)]
@@ -19,8 +19,10 @@
 
 (def
   ^{:private true
-    :doc     "Map associating CSS unit types to their conversion values."}
+    :doc     "Map associating CSS unit types to their conversion values.
+              Possible rounding errors, off by a few decimals"}
   conversions
+  ;; FIXME some values are off by a few significant decimal places
   {;; Absolute units
    :cm           {:cm 1
                   :mm 10
@@ -126,14 +128,29 @@
                   :dpi  96
                   :dpcm 243.84}})
 
+(defn- convertable?
+  "True if unit is a key of convertable-units, false otherwise."
+  [unit]
+  (contains? conversions unit))
 
-(defn convert
-  "convert between unit values"
-  ;; FIXME I don't like this form of map destructuring;feels repetitive
-  [{magnitude :magnitude from :unit} to]
-  ;; FIXME this is just temporary
-  conversions
-  {:magnitude magnitude :unit to})
+(defn- convert
+  "Convert between unit values contained in the conversions map.
+   Any units that cannot be will alert the user depending on the
+   reason as to why it cannot be converted.
+
+   Default: return initial input?"
+  [{:keys [magnitude unit] :as input} to]
+  (if (every? convertable? [unit to])
+    (let [weight1 (get-in conversions [unit to])
+          weight2 (get-in conversions [to unit])]
+      (cond
+        weight1 {:magnitude (* magnitude weight1) :unit to}
+        weight2 {:magnitude (/ magnitude weight2) :unit to}
+        ;; FIXME do we throw instead of return?
+        :else (do (println (str "Cannot convert between " (name unit) " and " (name to) "; returning initial input"))
+                  input)))
+    (let [x (first (drop-while convertable? [unit to]))]
+      (throw (ex-info (str "Inconvertible unit " (name x) " does not exist") {})))))
 
 (defn unit
   "conversion function?"
@@ -152,10 +169,11 @@
   data)
 
 
-(css [:body :h1 {:font-size (unit "10px" :em)}])
+(css [:body :h1 {:font-size (unit "37px" :cm)}])
+(convert {:magnitude 96 :unit :dpi} :dppx)
 (read-unit "-10px")
 (read-unit "20%")
-(unit "10px" :%)
-(unit {:magnitude 10 :unit :px})
-(unit "10px" :em)
-(unit {:magnitude 10 :unit :px} :em)
+#_(unit "10px" :%)
+#_(unit {:magnitude 10 :unit :px})
+#_(unit "10px" :em)
+#_(unit {:magnitude 10 :unit :px} :pt)
