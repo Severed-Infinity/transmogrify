@@ -146,6 +146,7 @@
       (cond
         weight1 {:magnitude (* magnitude weight1) :unit to}
         weight2 {:magnitude (/ magnitude weight2) :unit to}
+        ;; FIXME do we throw instead of return?
         :else (do (println (str "Cannot convert between " (name unit) " and " (name to) "; returning initial input"))
                   input)))
     (let [x (first (drop-while convertable? [unit to]))]
