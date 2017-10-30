@@ -13,7 +13,7 @@
   #"([+-]?\d+(?:\.?\d+)?)(p[xtc]|in|[cm]m|%|r?em|ex|ch|v(?:[wh]|m(?:in|ax))|deg|g?rad|turn|m?s|k?Hz|dp(?:i|cm|px))")
 
 (defn- read-unit
-  "Read a `CSSUnit` object from the string `s`."
+  "Read a unit from the string `s`."
   [s]
   (when-let [[_ magnitude unit] (re-matches css-unit-regex s)]
     (let [unit (keyword unit)
@@ -150,23 +150,20 @@
       (cond
         weight1 {:magnitude (* magnitude weight1) :unit to}
         weight2 {:magnitude (/ magnitude weight2) :unit to}
-        ;; FIXME do we throw instead of return?
         :else (throw
                 (ex-info
-                  (str "Cannot convert between " (name unit) " and " (name to) "; returning initial input")
+                  (str "Cannot convert between " (name unit) " and " (name to) ".")
                   {}))))
     (let [x (first (drop-while convertable? [unit to]))]
       (throw
         (ex-info
-          (str "Inconvertible unit " (name x) " does not exist")
+          (str "Inconvertible unit " (name x) " does not exist.")
           {})))))
 
-;; TODO :ret map? should be :ret :specs.css_spec/unit
-;; TODO :args map? should be :args :specs.css_spec/unit
 (spec/fdef
   convert
-  :args (spec/cat :input map? :to keyword?)
-  :ret map?)
+  :args (spec/cat :input :transmogrify.specs.css-spec/units :to keyword?)
+  :ret :transmogrify.specs.css-spec/units)
 
 (defn unit
   "conversion function?"
@@ -179,8 +176,6 @@
      (string? un) (unit (read-unit un) to)
      (map? un) (convert un to))))
 
-;; TODO :ret map? should be :ret :specs.css_spec/unit
-;; TODO :args map? should be :args :specs.css_spec/unit
 ;; FIXME string needs to be a regex
 (spec/fdef
   unit
@@ -189,14 +184,16 @@
                                      :unit-out keyword?))
   :ret :transmogrify.specs.css-spec/units)
 
-(convert {:magnitude 96 :unit :dpi} :dppx)
-(read-unit "-10px")
-(read-unit "20%")
-(unit "10px" :pt)
-(unit "10px")
-(unit {:magnitude 10 :unit :px})
-(unit "10px" :q)
-(unit {:magnitude 10 :unit :px} :pt)
+(comment
+  (convert {:magnitude 96 :unit :dpi} :dppx)
+  (read-unit "-10px")
+  (read-unit "20%")
+  (unit "10px" :pt)
+  (unit "10px")
+  (unit {:magnitude 10 :unit :px})
+  (unit "10px" :q)
+  (unit {:magnitude 10 :unit :px} :pt)
 
-(stest/instrument)
-(stest/abbrev-result (first (stest/check)))
+
+  (stest/instrument)
+  (stest/abbrev-result (first (stest/check))))
