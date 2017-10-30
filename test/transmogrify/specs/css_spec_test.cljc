@@ -10,16 +10,20 @@
 
 (def number-of-tests 10000)
 
-;; TODO css spec units property tests
+(def pos-double-gen (gen/fmap (fn [n] (if (pos? n) n 0.1)) gen/double))
+(def number-gen (gen/one-of [gen/int gen/double]))
 
+;; TODO css spec units property tests
 ;; FIXME I am an idiot, I should be testing with s/valid? and not s/conform
 
-(def pos-double (gen/fmap (fn [n] (if (pos? n) n 0.1)) gen/double))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;  UNITS ;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defspec css-spec-magnitude-key-generative-test
          number-of-tests
          (prop/for-all
-           [d pos-double]
+           [d pos-double-gen]
            (s/valid? ::css-spec/magnitude d)))
 
 (defspec css-spec-unit-key-generative-test
@@ -43,9 +47,67 @@
 (defspec css-spec-percentage-unit-map-generative-test
          number-of-tests
          (prop/for-all
-           [input (gen/hash-map :magnitude pos-double
-                                 :unit (gen/return :%))]
+           [input (gen/hash-map :magnitude pos-double-gen
+                                :unit (gen/return :%))]
            (s/valid? ::css-spec/percentage input)))
+
+;;;;;;;;;;  ABSOLUTE ;;;;;;;;;;;;;;;
+
+(defspec css-spec-unit-cm-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/hash-map :magnitude number-gen
+                                :unit (gen/return :cm))]
+           (s/valid? ::css-spec/cm input)))
+
+(defspec css-spec-unit-mm-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/hash-map :magnitude number-gen
+                                :unit (gen/return :mm))]
+           (s/valid? ::css-spec/mm input)))
+
+(defspec css-spec-unit-q-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/hash-map :magnitude number-gen
+                                :unit (gen/return :Q))]
+           (s/valid? ::css-spec/q input)))
+
+(defspec css-spec-unit-in-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/hash-map :magnitude number-gen
+                                :unit (gen/return :in))]
+           (s/valid? ::css-spec/in input)))
+
+(defspec css-spec-unit-pc-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/hash-map :magnitude number-gen
+                                :unit (gen/return :pc))]
+           (s/valid? ::css-spec/pc input)))
+
+(defspec css-spec-unit-pt-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/hash-map :magnitude number-gen
+                                :unit (gen/return :pt))]
+           (s/valid? ::css-spec/pt input)))
+
+(defspec css-spec-unit-px-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/hash-map :magnitude number-gen
+                                :unit (gen/return :px))]
+           (s/valid? ::css-spec/px input)))
+
+;;;;;;;;;;  RELATIVE ;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;  FONT ;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defspec css-spec-font-family-generative-test
          number-of-tests
@@ -153,6 +215,11 @@
                                 (gen/return :status-bar)])]
            (s/valid? ::css-spec/font inputs)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  PROPERTIES ;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defspec z-css-spec-properties-map-generative-test
          number-of-tests
          (prop/for-all
@@ -211,7 +278,7 @@
       (test/testing "absolute units"
         (test/is (s/valid? ::css-spec/cm {:magnitude 16.0 :unit :cm}))
         (test/is (s/valid? ::css-spec/mm {:magnitude 16.0 :unit :mm}))
-        (test/is (s/valid? ::css-spec/q {:magnitude 16.0 :unit :q}))
+        (test/is (s/valid? ::css-spec/q {:magnitude 16.0 :unit :Q}))
         (test/is (s/valid? ::css-spec/in {:magnitude 16.0 :unit :in}))
         (test/is (s/valid? ::css-spec/pc {:magnitude 16.0 :unit :pc}))
         (test/is (s/valid? ::css-spec/pt {:magnitude 16.0 :unit :pt}))

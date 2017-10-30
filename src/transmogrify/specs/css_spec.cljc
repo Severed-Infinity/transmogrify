@@ -10,7 +10,7 @@
 (s/def ::css-wide-keywords (st-ds/spec ::css-wide-keywords (s/spec #{:initial :inherit :unset :revert})))
 
 ;;;;;; UNITS ;;;;;;;;;
-;; https://drafts.csswg.org/css-values-3/
+;; https://drafts.csswg.org/css-values-4/
 ;; FIXME more work needs done on percentage
 (defn pos-double? [x] (and (double? x) (pos? x)))
 
@@ -55,7 +55,7 @@
 ;;; ABSOLUTE
 (s/def ::cm (st-ds/spec ::cm {:magnitude spec/number? :unit (s/spec #{:cm})}))
 (s/def ::mm (st-ds/spec ::mm {:magnitude spec/number? :unit (s/spec #{:mm})}))
-(s/def ::q (st-ds/spec ::q {:magnitude spec/number? :unit (s/spec #{:q})}))
+(s/def ::q (st-ds/spec ::q {:magnitude spec/number? :unit (s/spec #{:Q})}))
 (s/def ::in (st-ds/spec ::in {:magnitude spec/number? :unit (s/spec #{:in})}))
 (s/def ::pc (st-ds/spec ::pc {:magnitude spec/number? :unit (s/spec #{:pc})}))
 (s/def ::pt (st-ds/spec ::pt {:magnitude spec/number? :unit (s/spec #{:pt})}))
