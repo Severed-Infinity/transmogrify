@@ -1,6 +1,7 @@
 (ns transmogrify.css.units
   #?@(:cljs [(:require [cljs.reader :refer [read-string]])])
-  (:require [clojure.spec.alpha :as spec]
+  (:require [transmogrify.specs.css-spec]
+            [clojure.spec.alpha :as spec]
             [clojure.spec.test.alpha :as stest]))
 
 (def
@@ -161,7 +162,7 @@
           {})))))
 
 ;; TODO :ret map? should be :ret :specs.css_spec/unit
-;; TODO :args map? should be :args :specs.css_spec/unit  
+;; TODO :args map? should be :args :specs.css_spec/unit
 (spec/fdef
   convert
   :args (spec/cat :input map? :to keyword?)
@@ -180,12 +181,13 @@
 
 ;; TODO :ret map? should be :ret :specs.css_spec/unit
 ;; TODO :args map? should be :args :specs.css_spec/unit
+;; FIXME string needs to be a regex
 (spec/fdef
   unit
-  :args (spec/alt :single-arg (spec/or :map map? :string string?)
-                  :two-arg (spec/cat :unit-in (spec/or :map map? :string string?)
+  :args (spec/alt :single-arg (spec/or :map :transmogrify.specs.css-spec/units :string string? #_(spec/and string? #(re-matches css-unit-regex %)))
+                  :two-arg (spec/cat :unit-in (spec/or :map :transmogrify.specs.css-spec/units :string string?)
                                      :unit-out keyword?))
-  :ret map?)
+  :ret :transmogrify.specs.css-spec/units)
 
 (convert {:magnitude 96 :unit :dpi} :dppx)
 (read-unit "-10px")

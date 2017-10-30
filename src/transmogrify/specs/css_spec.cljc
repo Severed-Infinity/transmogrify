@@ -37,14 +37,14 @@
 
 ;;; DISTANCES
 ;;; RELATIVE
-(s/def ::em (st-ds/spec ::em {:magnitude spec/double? :unit (s/spec #{:em})}))
-(s/def ::ex (st-ds/spec ::ex {:magnitude spec/double? :unit (s/spec #{:ex})}))
-(s/def ::ch (st-ds/spec ::ch {:magnitude spec/double? :unit (s/spec #{:ch})}))
-(s/def ::rem (st-ds/spec ::rem {:magnitude spec/double? :unit (s/spec #{:rem})}))
-(s/def ::vh (st-ds/spec ::vh {:magnitude spec/double? :unit (s/spec #{:vh})}))
-(s/def ::vw (st-ds/spec ::vw {:magnitude spec/double? :unit (s/spec #{:vw})}))
-(s/def ::vmin (st-ds/spec ::vmin {:magnitude spec/double? :unit (s/spec #{:vmin})}))
-(s/def ::vmax (st-ds/spec ::vmax {:magnitude spec/double? :unit (s/spec #{:vmax})}))
+(s/def ::em (st-ds/spec ::em {:magnitude spec/number? :unit (s/spec #{:em})}))
+(s/def ::ex (st-ds/spec ::ex {:magnitude spec/number? :unit (s/spec #{:ex})}))
+(s/def ::ch (st-ds/spec ::ch {:magnitude spec/number? :unit (s/spec #{:ch})}))
+(s/def ::rem (st-ds/spec ::rem {:magnitude spec/number? :unit (s/spec #{:rem})}))
+(s/def ::vh (st-ds/spec ::vh {:magnitude spec/number? :unit (s/spec #{:vh})}))
+(s/def ::vw (st-ds/spec ::vw {:magnitude spec/number? :unit (s/spec #{:vw})}))
+(s/def ::vmin (st-ds/spec ::vmin {:magnitude spec/number? :unit (s/spec #{:vmin})}))
+(s/def ::vmax (st-ds/spec ::vmax {:magnitude spec/number? :unit (s/spec #{:vmax})}))
 (s/def ::cap any?)
 (s/def ::ic any?)
 (s/def ::lh any?)
@@ -53,13 +53,13 @@
 (s/def ::vb any?)
 
 ;;; ABSOLUTE
-(s/def ::cm (st-ds/spec ::cm {:magnitude spec/double? :unit (s/spec #{:cm})}))
-(s/def ::mm (st-ds/spec ::mm {:magnitude spec/double? :unit (s/spec #{:mm})}))
-(s/def ::q (st-ds/spec ::q {:magnitude spec/double? :unit (s/spec #{:q})}))
-(s/def ::in (st-ds/spec ::in {:magnitude spec/double? :unit (s/spec #{:in})}))
-(s/def ::pc (st-ds/spec ::pc {:magnitude spec/double? :unit (s/spec #{:pc})}))
-(s/def ::pt (st-ds/spec ::pt {:magnitude spec/double? :unit (s/spec #{:pt})}))
-(s/def ::px (st-ds/spec ::px {:magnitude spec/double? :unit (s/spec #{:px})}))
+(s/def ::cm (st-ds/spec ::cm {:magnitude spec/number? :unit (s/spec #{:cm})}))
+(s/def ::mm (st-ds/spec ::mm {:magnitude spec/number? :unit (s/spec #{:mm})}))
+(s/def ::q (st-ds/spec ::q {:magnitude spec/number? :unit (s/spec #{:q})}))
+(s/def ::in (st-ds/spec ::in {:magnitude spec/number? :unit (s/spec #{:in})}))
+(s/def ::pc (st-ds/spec ::pc {:magnitude spec/number? :unit (s/spec #{:pc})}))
+(s/def ::pt (st-ds/spec ::pt {:magnitude spec/number? :unit (s/spec #{:pt})}))
+(s/def ::px (st-ds/spec ::px {:magnitude spec/number? :unit (s/spec #{:px})}))
 
 ;;; ANGULAR
 ;;; small code coverage drop - fixed with s/conform
@@ -92,6 +92,12 @@
 (s/def ::angular-units (s/or :deg ::deg :grad ::grad :rad ::rad :turn ::turn))
 (s/def ::frequency-units (s/or :hz ::hz :khz ::khz))
 (s/def ::resolution-units (s/or :dpi ::dpi :dpcm ::dpcm :dppx ::dppx))
+
+(s/def ::units (s/or :distance ::distance-units
+                     :duration ::duration-units
+                     :angular ::angular-units
+                     :frequency ::frequency-units
+                     :resolution ::resolution-units))
 
 ;;; FONT SPECIFIC UNITS
 (s/def ::absolute-size (st-ds/spec ::absolute-size (s/spec #{:xx-small :x-small :small :medium :large :x-large :xx-large})))
