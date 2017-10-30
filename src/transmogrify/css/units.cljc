@@ -1,5 +1,7 @@
 (ns transmogrify.css.units
-  #?@(:cljs [(:require [cljs.reader :refer [read-string]])]))
+  #?@(:cljs [(:require [cljs.reader :refer [read-string]])])
+  (:require [clojure.spec.alpha :as spec]
+            [clojure.spec.test.alpha :as stest]))
 
 (def
   ^{:private true
@@ -148,26 +150,51 @@
         weight1 {:magnitude (* magnitude weight1) :unit to}
         weight2 {:magnitude (/ magnitude weight2) :unit to}
         ;; FIXME do we throw instead of return?
-        :else (do (println (str "Cannot convert between " (name unit) " and " (name to) "; returning initial input"))
-                  input)))
+        :else (throw
+                (ex-info
+                  (str "Cannot convert between " (name unit) " and " (name to) "; returning initial input")
+                  {}))))
     (let [x (first (drop-while convertable? [unit to]))]
-      (throw (ex-info (str "Inconvertible unit " (name x) " does not exist") {})))))
+      (throw
+        (ex-info
+          (str "Inconvertible unit " (name x) " does not exist")
+          {})))))
+
+;; TODO :ret map? should be :ret :specs.css_spec/unit
+;; TODO :args map? should be :args :specs.css_spec/unit  
+(spec/fdef
+  convert
+  :args (spec/cat :input map? :to keyword?)
+  :ret map?)
 
 (defn unit
   "conversion function?"
   ([un]
    (cond
-     (string? un) (read-unit un)
+     (string? un) (unit (read-unit un))
      (map? un) un))
   ([un to]
    (cond
      (string? un) (unit (read-unit un) to)
      (map? un) (convert un to))))
 
+;; TODO :ret map? should be :ret :specs.css_spec/unit
+;; TODO :args map? should be :args :specs.css_spec/unit
+(spec/fdef
+  unit
+  :args (spec/alt :single-arg (spec/or :map map? :string string?)
+                  :two-arg (spec/cat :unit-in (spec/or :map map? :string string?)
+                                     :unit-out keyword?))
+  :ret map?)
+
 (convert {:magnitude 96 :unit :dpi} :dppx)
 (read-unit "-10px")
 (read-unit "20%")
-#_(unit "10px" :%)
-#_(unit {:magnitude 10 :unit :px})
-#_(unit "10px" :em)
-#_(unit {:magnitude 10 :unit :px} :pt)
+(unit "10px" :pt)
+(unit "10px")
+(unit {:magnitude 10 :unit :px})
+(unit "10px" :q)
+(unit {:magnitude 10 :unit :px} :pt)
+
+(stest/instrument)
+(stest/abbrev-result (first (stest/check)))
