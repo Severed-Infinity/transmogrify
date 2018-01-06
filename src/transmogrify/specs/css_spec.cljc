@@ -5,7 +5,8 @@
             [spec-tools
              [core :as st-c]
              [data-spec :as st-ds]
-             [spec :as spec]]))
+             [spec :as spec]])
+  (:import [java.time]))
 
 (s/def ::css-wide-keywords (st-ds/spec ::css-wide-keywords (s/spec #{:initial :inherit :unset :revert})))
 
@@ -63,20 +64,20 @@
 
 ;;; ANGULAR
 ;;; small code coverage drop - fixed with s/conform
-(s/def ::deg (st-ds/spec ::deg {:magnitude (s/int-in 0 361) :unit (s/spec #{:deg})}))
+(s/def ::deg (st-ds/spec ::deg {:magnitude (s/int-in -1 361) :unit (s/spec #{:deg})}))
 ;;; small code coverage drop - fixed with s/conform
-(s/def ::grad (st-ds/spec ::grad {:magnitude (s/int-in 0 401) :unit (s/spec #{:grad})}))
-(s/def ::rad (st-ds/spec ::rad {:magnitude (s/and spec/number? #(< 0 % 6.2831853072)) :unit (s/spec #{:rad})}))
+(s/def ::grad (st-ds/spec ::grad {:magnitude (s/int-in -1 401) :unit (s/spec #{:grad})}))
+(s/def ::rad (st-ds/spec ::rad {:magnitude (s/and spec/number? #(<= 0 % 6.2831853072)) :unit (s/spec #{:rad})}))
 ;; FIXME the range is a bit strange
-(s/def ::turn (st-ds/spec ::turn {:magnitude (s/and spec/number? #(< 0 % 1.01)) :unit (s/spec #{:turn})}))
+(s/def ::turn (st-ds/spec ::turn {:magnitude (s/and spec/number? #(<= 0 % 1.01)) :unit (s/spec #{:turn})}))
 
 ;;; DURATION
 (s/def ::s (st-ds/spec ::s {:magnitude spec/int? :unit (s/spec #{:s})}))
 (s/def ::ms (st-ds/spec ::ms {:magnitude spec/int? :unit (s/spec #{:ms})}))
 
 ;;; FREQUENCY
-(s/def ::hz (st-ds/spec ::hz {:magnitude spec/pos-int? :unit (s/spec #{:hz})}))
-(s/def ::khz (st-ds/spec ::khz {:magnitude spec/pos-int? :unit (s/spec #{:khz})}))
+(s/def ::hz (st-ds/spec ::hz {:magnitude spec/pos-int? :unit (s/spec #{:Hz})}))
+(s/def ::khz (st-ds/spec ::khz {:magnitude spec/pos-int? :unit (s/spec #{:kHz})}))
 
 ;;; RESOLUTION
 (s/def ::dpi (st-ds/spec ::dpi {:magnitude spec/pos-int? :unit (s/spec #{:dpi})}))
