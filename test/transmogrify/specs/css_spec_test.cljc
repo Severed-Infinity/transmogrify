@@ -8,7 +8,7 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.clojure-test :refer [defspec]]))
 
-(def number-of-tests 10000)
+(def number-of-tests 100)
 
 (def pos-double-gen (gen/fmap (fn [n] (if (pos? n) n 0.1)) gen/double))
 (def number-gen (gen/one-of [gen/int gen/double]))
@@ -244,6 +244,7 @@
               :font           f-font
               :font-synthesis f-synthesis})))
 
+;; FIXME should be moved to the units test file
 (test/deftest css-spec-unit-tests
   (test/testing "css unit specs"
     (test/testing "-> percentage units"
@@ -309,8 +310,8 @@
       (test/is (s/valid? ::css-spec/ms {:magnitude 2301 :unit :ms})))
 
     (test/testing "-> frequency units"
-      (test/is (s/valid? ::css-spec/hz {:magnitude 120 :unit :hz}))
-      (test/is (s/valid? ::css-spec/khz {:magnitude 10 :unit :khz})))
+      (test/is (s/valid? ::css-spec/hz {:magnitude 120 :unit :Hz}))
+      (test/is (s/valid? ::css-spec/khz {:magnitude 10 :unit :kHz})))
 
     (test/testing "-> resolution units"
       (test/is (s/valid? ::css-spec/dpi {:magnitude 72 :unit :dpi}))
