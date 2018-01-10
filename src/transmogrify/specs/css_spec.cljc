@@ -46,12 +46,12 @@
 (s/def ::vw (st-ds/spec ::vw {:magnitude spec/number? :unit (s/spec #{:vw})}))
 (s/def ::vmin (st-ds/spec ::vmin {:magnitude spec/number? :unit (s/spec #{:vmin})}))
 (s/def ::vmax (st-ds/spec ::vmax {:magnitude spec/number? :unit (s/spec #{:vmax})}))
-(s/def ::cap any?)
-(s/def ::ic any?)
-(s/def ::lh any?)
-(s/def ::rlh any?)
-(s/def ::vi any?)
-(s/def ::vb any?)
+(s/def ::cap (st-ds/spec ::cap {:magnitude spec/number? :unit (s/spec #{:cap})}))
+(s/def ::ic (st-ds/spec ::ic {:magnitude spec/number? :unit (s/spec #{:ic})}))
+(s/def ::lh (st-ds/spec ::lh {:magnitude spec/number? :unit (s/spec #{:lh})}))
+(s/def ::rlh (st-ds/spec ::rlh {:magnitude spec/number? :unit (s/spec #{:rlh})}))
+(s/def ::vi (st-ds/spec ::vi {:magnitude spec/number? :unit (s/spec #{:vi})}))
+(s/def ::vb (st-ds/spec ::vb {:magnitude spec/number? :unit (s/spec #{:vb})}))
 
 ;;; ABSOLUTE
 (s/def ::cm (st-ds/spec ::cm {:magnitude spec/number? :unit (s/spec #{:cm})}))
@@ -64,29 +64,31 @@
 
 ;;; ANGULAR
 ;;; small code coverage drop - fixed with s/conform
-(s/def ::deg (st-ds/spec ::deg {:magnitude (s/int-in -1 361) :unit (s/spec #{:deg})}))
+(s/def ::deg (st-ds/spec ::deg {:magnitude (s/and spec/number? #(<= 0 % 360)) :unit (s/spec #{:deg})}))
 ;;; small code coverage drop - fixed with s/conform
-(s/def ::grad (st-ds/spec ::grad {:magnitude (s/int-in -1 401) :unit (s/spec #{:grad})}))
-(s/def ::rad (st-ds/spec ::rad {:magnitude (s/and spec/number? #(<= 0 % 6.2831853072)) :unit (s/spec #{:rad})}))
+(s/def ::grad (st-ds/spec ::grad {:magnitude (s/and spec/number? #(<= 0 % 400)) :unit (s/spec #{:grad})}))
+(s/def ::rad (st-ds/spec ::rad {:magnitude (s/and spec/number? #(<= 0 % 6.2831853071796)) :unit (s/spec #{:rad})}))
 ;; FIXME the range is a bit strange
-(s/def ::turn (st-ds/spec ::turn {:magnitude (s/and spec/number? #(<= 0 % 1.01)) :unit (s/spec #{:turn})}))
+(s/def ::turn (st-ds/spec ::turn {:magnitude (s/and spec/number? #(<= 0 % 1)) :unit (s/spec #{:turn})}))
 
 ;;; DURATION
-(s/def ::s (st-ds/spec ::s {:magnitude spec/int? :unit (s/spec #{:s})}))
-(s/def ::ms (st-ds/spec ::ms {:magnitude spec/int? :unit (s/spec #{:ms})}))
+(s/def ::s (st-ds/spec ::s {:magnitude (s/and spec/number? pos?) :unit (s/spec #{:s})}))
+(s/def ::ms (st-ds/spec ::ms {:magnitude (s/and spec/number? pos?) :unit (s/spec #{:ms})}))
 
 ;;; FREQUENCY
-(s/def ::hz (st-ds/spec ::hz {:magnitude spec/pos-int? :unit (s/spec #{:Hz})}))
-(s/def ::khz (st-ds/spec ::khz {:magnitude spec/pos-int? :unit (s/spec #{:kHz})}))
+(s/def ::hz (st-ds/spec ::hz {:magnitude (s/and spec/number? pos?) :unit (s/spec #{:Hz})}))
+(s/def ::khz (st-ds/spec ::khz {:magnitude (s/and spec/number? pos?) :unit (s/spec #{:kHz})}))
 
 ;;; RESOLUTION
-(s/def ::dpi (st-ds/spec ::dpi {:magnitude spec/pos-int? :unit (s/spec #{:dpi})}))
-(s/def ::dpcm (st-ds/spec ::dpcm {:magnitude spec/pos-int? :unit (s/spec #{:dpcm})}))
-(s/def ::dppx (st-ds/spec ::dppx {:magnitude spec/pos-int? :unit (s/spec #{:dppx})}))
+(s/def ::dpi (st-ds/spec ::dpi {:magnitude (s/and spec/number? pos?) :unit (s/spec #{:dpi})}))
+(s/def ::dpcm (st-ds/spec ::dpcm {:magnitude (s/and spec/number? pos?) :unit (s/spec #{:dpcm})}))
+(s/def ::dppx (st-ds/spec ::dppx {:magnitude (s/and spec/number? pos?) :unit (s/spec #{:dppx})}))
 
 ;;; UNIT GROUPS
 ;; FIXME distance vs length naming
-(s/def ::relative-distance-units (s/or :em ::em :ex ::ex :ch ::ch :rem ::rem :vh ::vh :vw ::vw :vmin ::vmin :vmax ::vmax))
+(s/def ::relative-distance-units
+  (s/or :em ::em :ex ::ex :ch ::ch :rem ::rem :vh ::vh :vw ::vw :vmin ::vmin :vmax ::vmax
+        :cap ::cap :ic ::ic :lh ::lh :rlh ::rlh :vi ::vi :vb ::vb))
 (s/def ::absolute-distance-units (s/or :cm ::cm :mm ::mm :q ::q :in ::in :pc ::pc :pt ::pt :px ::px))
 (s/def ::distance-units (s/or :relative ::relative-distance-units :absolute ::absolute-distance-units))
 (s/def ::duration-units (s/or :s ::s :ms ::ms))

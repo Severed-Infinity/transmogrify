@@ -7,7 +7,7 @@
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.spec.alpha :as s]))
 
-(def number-of-tests 100)
+(def number-of-tests 1000)
 
 (def number-gen (gen/one-of [gen/int gen/double]))
 
@@ -78,20 +78,22 @@
             unit-to absolute-unit-gen]
            (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
-#_(defspec css-unit-convert-fn-relative-generative-test
+;; FIXME come back to, relatives are a bit tricky to deal with
+;; due to not having a conversion to other relative units
+(defspec css-unit-convert-fn-relative-generative-test
          number-of-tests
          (prop/for-all
            [input (gen/hash-map :magnitude number-gen
                                 :unit relative-unit-gen)
             unit-to relative-unit-gen]
-           (is Error (#'css-units/convert input unit-to))))
+           #_(when (not (= (:unit input) unit-to)))
+           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
-;; FIXME Circular values required?
-;; issues are due to the mixing of ints and doubles as the magnitude
-#_(defspec css-unit-convert-fn-angular-generative-test
+(defspec css-unit-convert-fn-angular-generative-test
          number-of-tests
          (prop/for-all
-           [input (gen/hash-map :magnitude number-gen
+           [input (gen/hash-map :magnitude (gen/double* {:infinite? false :NaN? false
+                                                         :min       0 :max 1000000})
                                 :unit angular-unit-gen)
             unit-to angular-unit-gen]
            (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
@@ -99,33 +101,33 @@
 (defspec css-unit-convert-fn-time-generative-test
          number-of-tests
          (prop/for-all
-           [input (gen/hash-map :magnitude gen/int
+           [input (gen/hash-map :magnitude gen/s-pos-int
                                 :unit time-unit-gen)
             unit-to time-unit-gen]
            (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
-;; fails with issues due to 0
-#_(defspec css-unit-convert-fn-frequency-generative-test
+(defspec css-unit-convert-fn-frequency-generative-test
          number-of-tests
          (prop/for-all
-           [input (gen/hash-map :magnitude gen/pos-int
+           [input (gen/hash-map :magnitude gen/s-pos-int
                                 :unit frequency-unit-gen)
             unit-to frequency-unit-gen]
            (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
-;; fails with a 0
-#_(defspec css-unit-convert-fn-resolution-generative-test
+(defspec css-unit-convert-fn-resolution-generative-test
          number-of-tests
          (prop/for-all
-           [input (gen/hash-map :magnitude gen/pos-int
+           [input (gen/hash-map :magnitude (gen/such-that pos? number-gen {:max-tries 100})
                                 :unit resolution-unit-gen)
             unit-to resolution-unit-gen]
            (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
+
+;; No good as you can't convert across groups
 #_(defspec css-unit-convert-fn-generative-test
-         number-of-tests
-         (prop/for-all
-           [input (gen/hash-map :magnitude number-gen
-                                :unit unit-gen)
-            unit-to unit-gen]
-           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
+           number-of-tests
+           (prop/for-all
+             [input (gen/hash-map :magnitude number-gen
+                                  :unit unit-gen)
+              unit-to unit-gen]
+             (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert2 input unit-to))))

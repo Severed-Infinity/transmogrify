@@ -8,7 +8,7 @@
             [clojure.test.check.generators :as gen]
             [clojure.test.check.clojure-test :refer [defspec]]))
 
-(def number-of-tests 100)
+(def number-of-tests 1000)
 
 (def pos-double-gen (gen/fmap (fn [n] (if (pos? n) n 0.1)) gen/double))
 (def number-gen (gen/one-of [gen/int gen/double]))
