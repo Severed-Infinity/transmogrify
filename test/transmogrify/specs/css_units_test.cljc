@@ -7,7 +7,7 @@
             [clojure.test.check.clojure-test :refer [defspec]]
             [clojure.spec.alpha :as s]))
 
-(def number-of-tests 10000)
+(def number-of-tests 1000)
 
 (def number-gen (gen/one-of [gen/int gen/double]))
 
@@ -76,7 +76,7 @@
            [input (gen/hash-map :magnitude number-gen
                                 :unit absolute-unit-gen)
             unit-to absolute-unit-gen]
-           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert2 input unit-to))))
+           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
 ;; FIXME come back to, relatives are a bit tricky to deal with
 ;; due to not having a conversion to other relative units
@@ -87,7 +87,7 @@
                                 :unit relative-unit-gen)
             unit-to relative-unit-gen]
            #_(when (not (= (:unit input) unit-to)))
-           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert2 input unit-to))))
+           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
 (defspec css-unit-convert-fn-angular-generative-test
          number-of-tests
@@ -96,7 +96,7 @@
                                                          :min       0 :max 1000000})
                                 :unit angular-unit-gen)
             unit-to angular-unit-gen]
-           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert2 input unit-to))))
+           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
 (defspec css-unit-convert-fn-time-generative-test
          number-of-tests
@@ -104,7 +104,7 @@
            [input (gen/hash-map :magnitude gen/s-pos-int
                                 :unit time-unit-gen)
             unit-to time-unit-gen]
-           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert2 input unit-to))))
+           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
 (defspec css-unit-convert-fn-frequency-generative-test
          number-of-tests
@@ -112,15 +112,15 @@
            [input (gen/hash-map :magnitude gen/s-pos-int
                                 :unit frequency-unit-gen)
             unit-to frequency-unit-gen]
-           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert2 input unit-to))))
+           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
-#(defspec css-unit-convert-fn-resolution-generative-test
-          number-of-tests
-          (prop/for-all
-            [input (gen/hash-map :magnitude number-gen
-                                 :unit resolution-unit-gen)
-             unit-to resolution-unit-gen]
-            (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert2 input unit-to))))
+(defspec css-unit-convert-fn-resolution-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/hash-map :magnitude (gen/such-that pos? number-gen {:max-tries 100})
+                                :unit resolution-unit-gen)
+            unit-to resolution-unit-gen]
+           (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
 
 ;; No good as you can't convert across groups
