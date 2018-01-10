@@ -2,7 +2,8 @@
   #?@(:cljs [(:require [cljs.reader :refer [read-string]])])
   (:require [transmogrify.specs.css-spec]
             [clojure.spec.alpha :as spec]
-            [clojure.spec.test.alpha :as stest]))
+            [clojure.spec.test.alpha :as stest]
+            [clojure.spec.alpha :as s]))
 
 (def
   ^{:private true
@@ -20,125 +21,144 @@
           magnitude (if magnitude (read-string magnitude) 0)]
       {:unit unit :magnitude magnitude})))
 
-(def
-  ^{:private true}
-  absolute-conversions
-  {;; Absolute units
-   :cm {:cm 1
-        :mm 10
-        :Q  40
-        :in 0.39
-        :pc 2.36220473
-        :pt 28.3464567
-        :px 37.795275591}
-   :mm {:mm 1
-        :cm 0.1
-        :Q  4
-        :in 3.9
-        :pc 23.6220473
-        :pt 2.83464567
-        :px 3.7795275591}
-   :Q  {:Q  1
-        :cm 0.025
-        :mm 0.25
-        :in 15.6
-        :pc 94.4881892
-        :pt 1133.858268
-        :px 1511.81102364}
-   :in {:in 1
-        :cm 2.54
-        :mm 25.4
-        :Q  101.6
-        :pc 6
-        :pt 72
-        :px 96}
-   :pc {:pc 1
-        :cm 0.4233333333
-        :mm 4.23333333
-        :Q  16.9333333333
-        :in 0.1666666667
-        :pt 12
-        :px 16}
-   :pt {:pt 1
-        :cm 0.03527777778
-        :mm 0.3527777778
-        :Q  1.4111111111
-        :in 0.01388888889
-        :pc 0.0833333333
-        :px 1.3333333333}
-   :px {:px 1
-        :cm 0.02645833333
-        :mm 0.2645833333
-        :Q  1.0583333333
-        :in 0.01041666667
-        :pc 0.0625
-        :pt 0.75}})
+(def absolute-conversions
+  ^{:private true
+    :doc     "Conversion rates (functions) for the css absolute units"}
+  {:cm {:cm (fn [n] (* n 1))
+        :mm (fn [n] (* n 10))
+        :Q  (fn [n] (* n 40))
+        :in (fn [n] (* n 0.39))
+        :pc (fn [n] (* n 2.36220473))
+        :pt (fn [n] (* n 28.3464567))
+        :px (fn [n] (* n 37.795275591))}
+
+   :mm {:mm (fn [n] (* n 1))
+        :cm (fn [n] (* n 0.1))
+        :Q  (fn [n] (* n 4))
+        :in (fn [n] (* n 3.9))
+        :pc (fn [n] (* n 23.6220473))
+        :pt (fn [n] (* n 2.83464567))
+        :px (fn [n] (* n 3.7795275591))}
+
+   :Q  {:Q  (fn [n] (* n 1))
+        :cm (fn [n] (* n 0.025))
+        :mm (fn [n] (* n 0.25))
+        :in (fn [n] (* n 15.6))
+        :pc (fn [n] (* n 94.4881892))
+        :pt (fn [n] (* n 1133.858268))
+        :px (fn [n] (* n 1511.81102364))}
+
+   :in {:in (fn [n] (* n 1))
+        :cm (fn [n] (* n 2.54))
+        :mm (fn [n] (* n 25.4))
+        :Q  (fn [n] (* n 101.6))
+        :pc (fn [n] (* n 6))
+        :pt (fn [n] (* n 72))
+        :px (fn [n] (* n 96))}
+
+   :pc {:pc (fn [n] (* n 1))
+        :cm (fn [n] (* n 0.4233333333))
+        :mm (fn [n] (* n 4.23333333))
+        :Q  (fn [n] (* n 16.9333333333))
+        :in (fn [n] (* n 0.1666666667))
+        :pt (fn [n] (* n 12))
+        :px (fn [n] (* n 16))}
+
+   :pt {:pt (fn [n] (* n 1))
+        :cm (fn [n] (* n 0.03527777778))
+        :mm (fn [n] (* n 0.3527777778))
+        :Q  (fn [n] (* n 1.4111111111))
+        :in (fn [n] (* n 0.01388888889))
+        :pc (fn [n] (/ n 12))
+        :px (fn [n] (* n 1.3333333333))}
+
+   :px {:px (fn [n] (* n 1))
+        :cm (fn [n] (* n 0.02645833333))
+        :mm (fn [n] (* n 0.2645833333))
+        :Q  (fn [n] (* n 1.0583333333))
+        :in (fn [n] (* n 0.01041666667))
+        :pc (fn [n] (* n 0.0625))
+        :pt (fn [n] (* n 0.75))}})
+
+(defn abs [n] #?(:clj  ((.abs Math) n)
+                 :cljs (js/Math.abs n)))
 
 (def
   ^{:private true}
   relative-conversions
-  {;; Relative untis
-   :em   {:em 1}
-   :ex   {:ex 1}
-   :cap  {:cap 1}
-   :ch   {:ch 1}
-   :rem  {:rem 1}
-   :ic   {:ic 1}
-   :lh   {:lh 1}
-   :rlh  {:rlh 1}
-   :vh   {:vh 1}
-   :vw   {:vw 1}
-   :vi   {:vi 1}
-   :vb   {:vb 1}
-   :vmin {:vmin 1}
-   :vmax {:vmax 1}})
+  {:em   {:em (fn [n] (abs (* n 1)))}
+   :ex   {:ex (fn [n] (abs (* n 1)))}
+   :cap  {:cap (fn [n] (abs (* n 1)))}
+   :ch   {:ch (fn [n] (abs (* n 1)))}
+   :rem  {:rem (fn [n] (abs (* n 1)))}
+   :ic   {:ic (fn [n] (abs (* n 1)))}
+   :lh   {:lh (fn [n] (abs (* n 1)))}
+   :rlh  {:rlh (fn [n] (abs (* n 1)))}
+   :vh   {:vh (fn [n] (abs (* n 1)))}
+   :vw   {:vw (fn [n] (abs (* n 1)))}
+   :vi   {:vi (fn [n] (abs (* n 1)))}
+   :vb   {:vb (fn [n] (abs (* n 1)))}
+   :vmin {:vmin (fn [n] (abs (* n 1)))}
+   :vmax {:vmax (fn [n] (abs (* n 1)))}})
+
+(def pi #?(:clj  Math/PI
+           :cljs js/Math.PI))
 
 (def
   ^{:private true}
   angular-conversions
-  {;; Angular units
-   :deg  {:deg  1
-          :grad 1.111111111
-          :rad  0.0174532925
-          :turn 0.002777778}
-   :grad {:grad 1
-          :rad  63.661977237
-          :turn 0.0025}
-   :rad  {:rad  1
-          :turn 0.159154943}
-   :turn {:turn 1}})
+  ;; pass all values through degree as its SI of this unit
+  {:deg  {:deg  (fn [n] (mod (* n 1) 360))
+          :grad (fn [n] (mod (* n 1.1111111111111) 400))
+          :rad  (fn [n] (mod (* n 0.017453292519943) (* 2 pi)))
+          :turn (fn [n] (mod (* n 0.0027777777777778) 1))}
+
+   :grad {:grad (fn [n] (mod (* n 1) 400))
+          :deg  (fn [n] (mod (* n 0.9) 360))
+          :rad  (fn [n] (mod (* n 0.015707963267949) (* 2 pi)))
+          :turn (fn [n] (mod (* n 0.0025) 1))}
+
+   :rad  {:rad  (fn [n] (mod (* n 1) (* 2 pi)))
+          :deg  (fn [n] (mod (* n 57.295779513082) 360))
+          :grad (fn [n] (mod (* n 63.661977236758) 400))
+          :turn (fn [n] (mod (* n 0.1591549430919) 1))}
+
+   :turn {:turn (fn [n] (mod (* n 1) 1))
+          :deg  (fn [n] (mod (* n 360) 360))
+          :grad (fn [n] (mod (* n 400) 400))
+          :rad  (fn [n] (mod (* n 6.2831853071796) (* 2 pi)))}})
 
 (def
   ^{:private true}
   time-conversions
   {;; Time units
-   :s  {:ms 1000
-        :s  1}
-   :ms {:ms 1
-        :s  0.001}})
+   :s  {:ms (fn [n] (* n 1000))
+        :s  (fn [n] (* n 1))}
+   :ms {:ms (fn [n] (* n 1))
+        :s  (fn [n] (* n 0.001))}})
 
 (def
   ^{:private true}
   frequency-conversions
   {;; Frequency units
-   :Hz  {:Hz  1
-         :kHz 0.001}
-   :kHz {:kHz 1
-         :Hz  1000}})
+   :Hz  {:Hz  (fn [n] (* n 1))
+         :kHz (fn [n] (* n 0.001))}
+   :kHz {:kHz (fn [n] (* n 1))
+         :Hz  (fn [n] (* n 1000))}})
 
 (def
   ^{:private true}
   resolution-conversions
   {;; Resolution units
-   :dpi  {:dpi  1
-          :dpcm 2.54
-          :dppx 0.01041666667}
-   :dpcm {:dpcm 1
-          :dpi  0.39
-          :dppx 37.795275591}
-   :dppx {:dppx 1
-          :dpi  96
-          :dpcm 243.84}})
+   :dpi  {:dpi  (fn [n] (* n 1))
+          :dpcm (fn [n] (* n 2.54))
+          :dppx (fn [n] (* n 0.01041666667))}
+   :dpcm {:dpcm (fn [n] (* n 1))
+          :dpi  (fn [n] (* n 0.39))
+          :dppx (fn [n] (* n 37.795275591))}
+   :dppx {:dppx (fn [n] (* n 1))
+          :dpi  (fn [n] (* n 96))
+          :dpcm (fn [n] (* n 243.84))}})
 
 (def
   ^{:private true
@@ -155,42 +175,65 @@
     frequency-conversions
     resolution-conversions
     ;; Percentage Unit - it is its own class
-    {(keyword "%") {(keyword "%") 1}}))
+    {(keyword "%") {(keyword "%") (fn [n] (* n 1))}}))
 
-(defn- convertable?
+(defn- convertible?
   "True if unit is a key of convertable-units, false otherwise."
   [unit]
   (contains? conversions unit))
 
-(defn- force-int [value unit]
-  (if (or (contains? angular-conversions unit)
-          (contains? time-conversions unit)
-          (contains? frequency-conversions unit)
-          (contains? resolution-conversions unit))
-    (if (= (or :rad :turn) unit)
-      (Math/abs value)
-      (Math/abs (int value)))
-    value))
+(comment
+  #_(defn- force-int [value unit]
+      (if (or (contains? angular-conversions unit)
+              (contains? time-conversions unit)
+              (contains? frequency-conversions unit)
+              (contains? resolution-conversions unit))
+        (if (= (or :rad :turn) unit)
+          (Math/abs value)
+          (Math/abs (int value)))
+        value))
+
+  #_(defn- convert
+      "Convert between unit values contained in the conversions map.
+       Any units that cannot be will alert the user depending on the
+       reason as to why it cannot be converted.
+
+       Default: return initial input?"
+      [{:keys [magnitude unit] :as input} to
+       (if (every? convertible? [unit to])
+         (let [weight1 (get-in conversions [unit to])
+               weight2 (get-in conversions [to unit])]
+           (cond
+             ;; FIXME do I force int conversion?
+             weight1 {:magnitude (force-int (* magnitude weight1) to) :unit to}
+             weight2 {:magnitude (force-int (/ magnitude weight2) to) :unit to}
+             :else (throw
+                     (ex-info
+                       (str "Cannot convert between " (name unit) " and " (name to) ".")
+                       {}))))
+         (let [x (first (drop-while convertible? [unit to]))]
+           (throw
+             (ex-info
+               (str "Inconvertible unit " (name x) " does not exist.")
+               {}))))]))
 
 (defn- convert
   "Convert between unit values contained in the conversions map.
    Any units that cannot be will alert the user depending on the
    reason as to why it cannot be converted.
 
-   Default: return initial input?"
+   Default: return initial input?
+
+   Relative units will return the initial unit unchanged regardless of its to unit
+   as all relative units lack a conversion weight"
   [{:keys [magnitude unit] :as input} to]
-  (if (every? convertable? [unit to])
-    (let [weight1 (get-in conversions [unit to])
-          weight2 (get-in conversions [to unit])]
+  (if (every? convertible? [unit])
+    (let [conversion-weight (get-in conversions [unit to])]
       (cond
-        ;; FIXME do I force int conversion?
-        weight1 {:magnitude (force-int (* weight1 magnitude) to) :unit to}
-        weight2 {:magnitude (force-int (/ magnitude weight2) to) :unit to}
-        :else (throw
-                (ex-info
-                  (str "Cannot convert between " (name unit) " and " (name to) ".")
-                  {}))))
-    (let [x (first (drop-while convertable? [unit to]))]
+        ;; defensive check against relative units due them not having a conversion
+        (contains? relative-conversions unit) input
+        :else {:magnitude (conversion-weight magnitude) :unit to}))
+    (let [x (first (drop-while convertible? [unit to]))]
       (throw
         (ex-info
           (str "Inconvertible unit " (name x) " does not exist.")
@@ -230,6 +273,10 @@
   (convert {:magnitude 0.625 :unit :grad} :rad)
   (convert {:magnitude 0 :unit :Hz} :kHz)
   (convert {:magnitude 0 :unit :s} :ms)
+  (convert {:magnitude 10 :unit :rad} :deg)
+  (convert2 {:magnitude 1, :unit :Hz} :kHz)
+  (convert2 {:magnitude 10 :unit :pt} :pc)
+  (s/valid? :transmogrify.specs.css-spec/duration-units (convert2 {:magnitude -4, :unit :ms} :s))
   (read-unit "-10px")
   (read-unit "20%")
   (unit "10px" :pt)
