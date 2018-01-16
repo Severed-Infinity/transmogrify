@@ -102,6 +102,10 @@
                      :frequency ::frequency-units
                      :resolution ::resolution-units))
 
+(s/def ::unit-keywords (s/spec #{:% :em :ex :ch :rem :vh :vw :vmin :vmax :cap :ic :lh :rlh :vi :vb
+                                 :cm :mm :Q :in :pc :pt :px :deg :grad :rad :turn :s :ms :Hz :kHz
+                                 :dpi :dpcm :dppx}))
+
 ;;; FONT SPECIFIC UNITS
 (s/def ::absolute-size (st-ds/spec ::absolute-size (s/spec #{:xx-small :x-small :small :medium :large :x-large :xx-large})))
 (s/def ::relative-size (st-ds/spec ::relative-size (s/spec #{:larger :smaller})))

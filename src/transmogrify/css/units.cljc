@@ -10,8 +10,7 @@
     :doc     "Regular expression for matching a CSS unit. The magnitude
              and unit are captured."}
   css-unit-regex
-  ;; TODO make sure all units are here
-  #"([+-]?\d+(?:\.?\d+)?)(p[xtc]|in|[cm]m|%|r?em|ex|ch|v(?:[wh]|m(?:in|ax))|deg|g?rad|turn|m?s|k?Hz|dp(?:i|cm|px))")
+  #"([+-]?\d+(?:\.?\d+)?)(p[xtc]|in|Q|[cm]m|%|r?em|ex|ch|v(?:[whib]|m(?:in|ax))|cap|ic|r?lh|deg|g?rad|turn|m?s|k?Hz|dp(?:i|cm|px))")
 
 (defn- read-unit
   "Read a unit from the string `s`."
@@ -80,11 +79,16 @@
         :pc (fn [n] (* n 0.0625))
         :pt (fn [n] (* n 0.75))}})
 
-(defn abs [n] #?(:clj  ((.abs Math) n)
-                 :cljs (js/Math.abs n)))
+(defn abs
+  "helper function for calling the maths absolute function"
+  [n]
+  #?(:clj ((.abs Math) n))
+    :cljs (js/Math.abs n))
 
 (def
-  ^{:private true}
+  ^{:private true
+    :doc     "Conversion rates (functions) for the css relative units,
+              relative units should have no conversions except to themselves"}
   relative-conversions
   {:em   {:em (fn [n] (abs (* n 1)))}
    :ex   {:ex (fn [n] (abs (* n 1)))}
@@ -101,11 +105,14 @@
    :vmin {:vmin (fn [n] (abs (* n 1)))}
    :vmax {:vmax (fn [n] (abs (* n 1)))}})
 
-(def pi #?(:clj  Math/PI
-           :cljs js/Math.PI))
+(def
+  ^{:doc "Helper var for calling Math PI."}
+  pi #?(:clj  Math/PI
+        :cljs js/Math.PI))
 
 (def
-  ^{:private true}
+  ^{:private true
+    :doc     "Conversion rates (functions) for the css angular units"}
   angular-conversions
   ;; pass all values through degree as its SI of this unit
   {:deg  {:deg  (fn [n] (mod (* n 1) 360))
@@ -129,28 +136,28 @@
           :rad  (fn [n] (mod (* n 6.2831853071796) (* 2 pi)))}})
 
 (def
-  ^{:private true}
+  ^{:private true
+    :doc     "Conversion rates (functions) for the css time units"}
   time-conversions
-  {;; Time units
-   :s  {:ms (fn [n] (* n 1000))
+  {:s  {:ms (fn [n] (* n 1000))
         :s  (fn [n] (* n 1))}
    :ms {:ms (fn [n] (* n 1))
         :s  (fn [n] (* n 0.001))}})
 
 (def
-  ^{:private true}
+  ^{:private true
+    :doc     "Conversion rates (functions) for the css frequency units"}
   frequency-conversions
-  {;; Frequency units
-   :Hz  {:Hz  (fn [n] (* n 1))
+  {:Hz  {:Hz  (fn [n] (* n 1))
          :kHz (fn [n] (* n 0.001))}
    :kHz {:kHz (fn [n] (* n 1))
          :Hz  (fn [n] (* n 1000))}})
 
 (def
-  ^{:private true}
+  ^{:private true
+    :doc     "Conversion rates (functions) for the css resolution units"}
   resolution-conversions
-  {;; Resolution units
-   :dpi  {:dpi  (fn [n] (* n 1))
+  {:dpi  {:dpi  (fn [n] (* n 1))
           :dpcm (fn [n] (* n 2.54))
           :dppx (fn [n] (* n 0.01041666667))}
    :dpcm {:dpcm (fn [n] (* n 1))
@@ -167,6 +174,7 @@
   conversions
   ;; FIXME some values are off by a few significant decimal places
   ;; FIXME the values are off because you only need them in one not the other
+  ;; FIXME some conversion values might be wrong, will need to check
   (merge
     absolute-conversions
     relative-conversions
@@ -178,9 +186,14 @@
     {(keyword "%") {(keyword "%") (fn [n] (* n 1))}}))
 
 (defn- convertible?
-  "True if unit is a key of convertable-units, false otherwise."
+  "True if unit is a key of convertible-units, false otherwise."
   [unit]
   (contains? conversions unit))
+
+(defn- can-convert?
+  "True if the unit can be convert to its to (target), false otherwise."
+  [unit to-unit]
+  (not (nil? (get-in conversions [unit to-unit]))))
 
 (comment
   #_(defn- force-int [value unit]
@@ -204,7 +217,6 @@
          (let [weight1 (get-in conversions [unit to])
                weight2 (get-in conversions [to unit])]
            (cond
-             ;; FIXME do I force int conversion?
              weight1 {:magnitude (force-int (* magnitude weight1) to) :unit to}
              weight2 {:magnitude (force-int (/ magnitude weight2) to) :unit to}
              :else (throw
@@ -222,18 +234,21 @@
    Any units that cannot be will alert the user depending on the
    reason as to why it cannot be converted.
 
-   Default: return initial input?
+   Default: return initial input.
 
    Relative units will return the initial unit unchanged regardless of its to unit
    as all relative units lack a conversion weight"
-  [{:keys [magnitude unit] :as input} to]
+  [{:keys [magnitude unit] :as input} to-unit]
   (if (every? convertible? [unit])
-    (let [conversion-weight (get-in conversions [unit to])]
+    (let [conversion-weight (get-in conversions [unit to-unit])]
       (cond
-        ;; defensive check against relative units due them not having a conversion
-        (contains? relative-conversions unit) input
-        :else {:magnitude (conversion-weight magnitude) :unit to}))
-    (let [x (first (drop-while convertible? [unit to]))]
+        (can-convert? unit to-unit) {:magnitude (conversion-weight magnitude) :unit to-unit}
+        :default input)
+      #_(cond
+          ;; defensive check against relative units due them not having a conversion
+          (contains? relative-conversions unit) input
+          :else {:magnitude (conversion-weight magnitude) :unit to}))
+    (let [x (first (drop-while convertible? [unit to-unit]))]
       (throw
         (ex-info
           (str "Inconvertible unit " (name x) " does not exist.")
@@ -242,29 +257,45 @@
 ;; TODO spec generator
 (spec/fdef
   convert
-  :args (spec/cat :input :transmogrify.specs.css-spec/units :to keyword?)
-  :ret :transmogrify.specs.css-spec/units)
+  :args (spec/cat :input :transmogrify.specs.css-spec/units
+                  :to :transmogrify.specs.css-spec/unit-keywords)
+  :ret :transmogrify.specs.css-spec/units
+  :fn (fn [{:keys [args ret]}]
+        (let [input (spec/unform :transmogrify.specs.css-spec/units (:input args))
+              output (spec/unform :transmogrify.specs.css-spec/units ret)]
+          #_(println "in" input (:to args) "\n" "out" output)
+          (and (can-convert? (:unit input) (:to args))
+               (or (= (:to args) (:unit output))
+                   (= input output))))))
 
 (defn unit
-  "conversion function?"
+  "Unit conversion and formatting function, use this even when looking to convert.
+   Converts a unit map or string to a unit map format, and if a to unit value is provided
+   convert to that unit and returns the map
+
+
+   See internal convert function for conversion."
   ([un]
    (cond
      (string? un) (unit (read-unit un))
      (map? un) un))
-  ([un to]
+  ([un to-unit]
    (cond
-     (string? un) (unit (read-unit un) to)
-     (map? un) (convert un to))))
+     (string? un) (unit (read-unit un) to-unit)
+     (map? un) (convert un to-unit))))
 
-;; FIXME string needs to be a regex
-;; TODO spec generator
+;; TODO spec generator - specifically towards string regex value
 (spec/fdef
   unit
-  :args (spec/alt :single-arg (spec/or :map :transmogrify.specs.css-spec/units :string string? #_(spec/and string? #(re-matches css-unit-regex %)))
-                  :two-arg (spec/cat :unit-in (spec/or :map :transmogrify.specs.css-spec/units :string string?)
-                                     :unit-out keyword?))
+  :args (spec/alt :unary (spec/or :map :transmogrify.specs.css-spec/units
+                                  :string (spec/and string? #(re-matches css-unit-regex %)))
+                  :binary (spec/cat :unit-in (spec/or :map :transmogrify.specs.css-spec/units
+                                                      :string (spec/and string? #(re-matches css-unit-regex %)))
+                                    :unit-out :transmogrify.specs.css-spec/unit-keywords))
   :ret :transmogrify.specs.css-spec/units)
 
+
+;;FIXME remove from this namespace
 (comment
   (convert {:magnitude 96 :unit :dpi} :dppx)
   (convert {:magnitude 0 :unit :grad} :deg)
@@ -274,8 +305,10 @@
   (convert {:magnitude 0 :unit :Hz} :kHz)
   (convert {:magnitude 0 :unit :s} :ms)
   (convert {:magnitude 10 :unit :rad} :deg)
-  (convert2 {:magnitude 1, :unit :Hz} :kHz)
-  (convert2 {:magnitude 10 :unit :pt} :pc)
+  (convert {:magnitude 1, :unit :Hz} :kHz)
+  (convert {:magnitude 10 :unit :pt} :pc)
+  (convert {:magnitude 1, :unit :ms} :ms)
+  (can-convert? :em :ex)
   (s/valid? :transmogrify.specs.css-spec/duration-units (convert2 {:magnitude -4, :unit :ms} :s))
   (read-unit "-10px")
   (read-unit "20%")
@@ -287,4 +320,5 @@
 
 
   (stest/instrument)
-  (stest/abbrev-result (first (stest/check))))
+  (stest/check `convert)
+  (stest/summarize-results (stest/check)))
