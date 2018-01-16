@@ -81,9 +81,8 @@
 
 (defn abs
   "helper function for calling the maths absolute function"
-  [n]
-  #?(:clj ((.abs Math) n)
-     :cljs (js/Math.abs n)))
+  [n] #?(:clj  (Math/abs n)
+         :cljs (js/Math.abs n)))
 
 (def
   ^{:private true
