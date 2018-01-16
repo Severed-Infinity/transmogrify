@@ -122,7 +122,6 @@
             unit-to resolution-unit-gen]
            (s/valid? :transmogrify.specs.css-spec/units (#'css-units/convert input unit-to))))
 
-
 ;; No good as you can't convert across groups
 #_(defspec css-unit-convert-fn-generative-test
            number-of-tests
