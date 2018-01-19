@@ -8,6 +8,9 @@
              [spec :as spec]])
   (:import [java.time]))
 
+;; helpful link for meaning behind css grouping symbols
+;; http://man.hubwiz.com/docset/CSS.docset/Contents/Resources/Documents/developer.mozilla.org/en-US/docs/Web/CSS/Value_definition_syntax.html#Hash_mark_(.23)
+
 (s/def ::css-wide-keywords (st-ds/spec ::css-wide-keywords (s/spec #{:initial :inherit :unset :revert})))
 
 ;;;;;; UNITS ;;;;;;;;;
@@ -220,6 +223,7 @@
       :vector (s/coll-of (s/spec #{:weight :small-caps :style})))))
 
 ;; FIXME string has some strict conditions to be met https://www.w3.org/TR/css-fonts-3/#feature-tag-value
+;; FIXME strong tied to font-variants
 (s/def ::feature-tag-value (s/cat :string string? :value (s/? (s/or :int int? :key #{:on :off}))))
 (s/def ::font-feature-settings
   (st-ds/spec ::font-feature-settings
@@ -234,12 +238,68 @@
 ;; TODO font variant
 ;; FONT VARIANT
 (s/def ::font-variant any?)
-(s/def ::font-variant-alternatives any?)
+
+;; FIXME feature keys possibly shouldn't be included, as I believe they are more for font-feature-setting calls instead
+;; FIXME pos-int? is apparently the wrong value for stylictic
+(s/def ::stylistic (s/cat :fn-keyword #{:stylistic} :feature-key #{:salt} :value pos-int?))
+(s/def ::styleset
+  (s/+ (s/cat :fn-keyword #{:styleset}
+              :value (s/and string? #(re-matches #"ss((0|1)[0-9]|20)" %)))))
+(s/def ::character-variant
+  (s/+ (s/cat :fn-keyword #{:character-variant}
+              :value (s/and string? #(re-matches #"cv[0-9][0-9]" %)))))
+;; FIXME pos-int? is apparently the wrong value for swash
+(s/def ::swash (s/cat :fn-keyword #{:swash} :feature-key #{:swsh :cswh} :value pos-int?))
+;; FIXME pos-int? is apparently the wrong value for ornaments
+(s/def ::ornaments (s/cat :fn-keyword #{:ornaments} :feature-key #{:ornm} :value pos-int?))
+;; FIXME pos-int? is apparently the wrong value for annotations
+;; FIXME annotations is apparently not a value for font-variant-alternatives
+(s/def ::annotations (s/cat :fn-keyword #{:annotations} :feature-key #{:nalt} :value pos-int?))
+
+(s/def ::font-variant-alternatives
+  (st-ds/spec ::font-variant-alternatives
+              (s/or :normal (s/spec #{:normal})
+                    :values (s/+ (s/or :historical (s/spec #{:historical-forms})
+                                       :stylistic ::stylistic
+                                       :styleset ::styleset
+                                       :character-variant ::character-variant
+                                       :swash ::swash
+                                       :ornaments ::ornaments
+                                       :annotations ::annotations)))))
+
 (s/def ::font-variant-caps
   (st-ds/spec ::font-variant-caps
               (s/spec #{:normal :small-caps :all-small-caps :petite-caps :all-petite-caps :unicase :titling-caps})))
-(s/def ::font-variant-east-asian any?)
-(s/def ::font-variant-ligatures any?)
+
+(s/def ::east-asian-variant-values
+  (st-ds/spec ::east-asian-variant-values
+              (s/spec #{:jis78 :jis83 :jis90 :jis04 :simplified :traditional})))
+
+(s/def ::east-asian-width-values
+  (st-ds/spec ::east-asian-width-values
+              (s/spec #{:full-width :proportional-width})))
+
+(s/def ::font-variant-east-asian
+  (st-ds/spec ::font-variant-east-asian
+              (s/or :normal (s/spec #{:normal})
+                    :values (s/+ (s/or :variant ::east-asian-variant-values
+                                       :width ::east-asian-width-values
+                                       :ruby (s/spec #{:ruby}))))))
+
+;; FIXME these maybe all wrong, it might be that the s/or keys maybe the actual values
+(s/def ::common-lig-values (s/+ (s/or :common-ligatures #{:liga :clig} :no-common-ligatures #{:liga :clig})))
+(s/def ::discretionary-lig-values (s/+ (s/or :discretionary-ligatures #{:dlig} :no-discretionary-ligatures #{:dlig})))
+(s/def ::historical-lig-values (s/+ (s/or :historical-ligatures #{:hlig} :no-historical-ligatures #{:hlig})))
+(s/def ::contextual-alt-values (s/+ (s/or :contextual #{:calt} :no-contextual #{:calt})))
+
+(s/def ::font-variant-ligatures
+  (st-ds/spec ::font-variant-ligatures
+              (s/or :normal (s/spec #{:normal})
+                    :none (s/spec #{:none})
+                    :values (s/+ (s/or :common ::common-lig-values
+                                       :discretionary ::discretionary-lig-values
+                                       :historical ::historical-lig-values
+                                       :contextual ::contextual-alt-values)))))
 
 (s/def ::numeric-figure-values #{:lining-numbers :oldstyle-nums})
 (s/def ::numeric-spacing-values #{:proportional-nums :tabular-nums})
