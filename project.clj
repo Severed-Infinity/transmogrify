@@ -11,6 +11,7 @@
                  [metosin/spec-tools "0.5.1"]]
   :plugins [[lein-cloverage "1.0.10"]]
   :profiles {:dev {:dependencies [[org.clojure/test.check "0.10.0-alpha2"]
+                                  [com.gfredericks/test.chuck "0.2.8"]
                                   [cloverage/cloverage "1.0.10"]]}}
   :javac-options ["-target" "1.8" "-source" "1.8" "-Xlint:-options"]
   :resource-paths ["resources"]
