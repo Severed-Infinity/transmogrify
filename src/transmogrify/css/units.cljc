@@ -5,6 +5,9 @@
             [clojure.spec.test.alpha :as stest]
             [clojure.spec.alpha :as s]))
 
+
+;; TODO add maths functions?
+
 (def
   ^{:private true
     :doc     "Regular expression for matching a CSS unit. The magnitude

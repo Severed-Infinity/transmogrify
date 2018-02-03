@@ -15,6 +15,16 @@
 
 ;; TODO css spec units property tests
 ;; FIXME I am an idiot, I should be testing with s/valid? and not s/conform
+;; FIXME a lot of cases that use tuple can be of variable length with some values missing
+;;   issue would then become keeping order consistency
+
+(comment
+  ;spec stub
+  (defspec css-spec--generative-test
+           number-of-tests
+           (prop/for-all
+             [input (gen/return true)]
+             (true? input))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;  UNITS ;;;;;;;;;;;;;;;;;
@@ -103,7 +113,147 @@
            (s/valid? ::css-spec/px input)))
 
 ;;;;;;;;;;  RELATIVE ;;;;;;;;;;;;;;;;
+(defspec css-spec-unit-em-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
 
+(defspec css-spec-unit-ex-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-ch-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-rem-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-vh-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-vw-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-vmin-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-vmax-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-cap-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-ic-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-lh-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-rlh-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-vi-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-vb-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;  ANGULAR ;;;;;;;;;;;;;;;;;
+(defspec css-spec-unit-deg-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-grad-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-rad-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-turn-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;  DURATION ;;;;;;;;;;;;;;;;
+(defspec css-spec-unit-s-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-ms-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;  FREQUENCY ;;;;;;;;;;;;;;;
+(defspec css-spec-unit-hz-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-unit-khz-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;  RESOLUTION ;;;;;;;;;;;;;;
+(defspec css-spec-styleset-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;  FONT ;;;;;;;;;;;;;;;;;;
@@ -198,9 +348,11 @@
          number-of-tests
          (prop/for-all
            [input (gen/tuple (s/gen ::css-spec/font-style)
+                             #_(s/gen ::css-spec/font-variant)
                              (s/gen ::css-spec/font-weight)
                              (s/gen ::css-spec/font-stretch)
                              (s/gen ::css-spec/font-size)
+                             #_(s/gen ::css-spec/line-height)
                              (s/gen ::css-spec/font-family))]
            (s/valid? ::css-spec/font input)))
 
@@ -215,6 +367,441 @@
                                 (gen/return :status-bar)])]
            (s/valid? ::css-spec/font inputs)))
 
+(defspec css-spec-font-generative-test
+         ;;fixme need to add the rest of the properties
+         number-of-tests
+         (prop/for-all
+           [input (gen/one-of
+                    [(gen/tuple (s/gen ::css-spec/font-style)
+                                #_(s/gen ::css-spec/font-variant)
+                                (s/gen ::css-spec/font-weight)
+                                (s/gen ::css-spec/font-stretch)
+                                (s/gen ::css-spec/font-size)
+                                #_(s/gen ::css-spec/line-height)
+                                (s/gen ::css-spec/font-family))
+                     (gen/one-of [(gen/return :caption)
+                                  (gen/return :icon)
+                                  (gen/return :menu)
+                                  (gen/return :message-box)
+                                  (gen/return :small-caption)
+                                  (gen/return :status-bar)])])]
+           (s/valid? ::css-spec/font input)))
+
+(defspec css-spec-font-synthesis-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/one-of
+                    [(gen/return :none)
+                     (gen/tuple (gen/return :weight)
+                                (gen/return :small-caps)
+                                (gen/return :style))])]
+           (s/valid? ::css-spec/font-synthesis input)))
+
+(defspec css-spec-feature-tag-value-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-feature-settings-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-kerning-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-language-override-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-variant-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-variant-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-feature-tag-value-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-stylistic-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-styleset-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-character-variant-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-swash-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-ornaments-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-annotations-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-variant-alternatives-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-variant-caps-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-east-asian-variant-values-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-east-asian-width-values-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-variant-east-asian-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-common-lig-values-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-discretionary-lig-values-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-historical-lig-values-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-contextual-alt-values-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-variant-ligatures-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-numeric-figures-values-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-numeric-spacing-values-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-numeric-fraction-values-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-numeric-other-values-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-variant-numeric-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-font-variant-position-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  COLOUR ;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-color-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-opacity-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  BACKGROUND ;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-background-color-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  BORDER ;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-border-top-width-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  BOX ;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-margin-top-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  FLEXIBLE BOX ;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-align-content-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  GRID LAYOUT ;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-grid-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  TEXT ;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-word-spacing-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  TEXT DECORATION ;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-text-decoration-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  WRITING MODES ;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-direction-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  TABLES ;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-border-collapse-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  LISTS & COUNTERS ;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-counter-increment-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  ANIMATION ;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-animation-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  TRANSFORM ;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-backface-visibility-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  TRANSITIONS ;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-transition-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  BASIC USER INTERFACE ;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-box-sizing-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  MULTI-COLUMN LAYOUT ;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-break-after-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  PAGE MEDIA ;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-windows-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  FILTER EFFECTS ;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-filter-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  IMAGE VALUES & REPLACED CONTENT ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-image-orientation-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  MASKING ;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-mask-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+(defspec css-spec-mask-type-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  SPEECH ;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-azimuth-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;  MARQUEE ;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defspec css-spec-marquee-direction-generative-test
+         number-of-tests
+         (prop/for-all
+           [input (gen/return true)]
+           (true? input)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;  PROPERTIES ;;;;;;;;;;;;;;;
